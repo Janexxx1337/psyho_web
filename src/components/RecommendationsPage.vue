@@ -109,7 +109,7 @@ const sendAdditionalQuestion = async () => {
   try {
     const formData = new FormData();
     formData.append('name', route.params.name as string);
-    formData.append('age', String(route.params.age)); // Преобразуем число в строку
+    formData.append('age', String(route.params.age));
     formData.append('condition', route.params.condition as string);
     formData.append('description', route.params.description as string);
     formData.append('question', additionalQuestion.value);

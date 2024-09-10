@@ -21,10 +21,12 @@
             <div class="input-with-icon">
               <Document class="input-icon" />
               <el-select v-model="form.condition" placeholder="Выберите состояние">
-                <el-option label="Отлично" value="Отлично"></el-option>
-                <el-option label="Хорошо" value="Хорошо"></el-option>
-                <el-option label="Средне" value="Средне"></el-option>
-                <el-option label="Плохо" value="Плохо"></el-option>
+                <el-option label="Спокойный и уверенный" value="Спокойный и уверенный"></el-option>
+                <el-option label="Немного напряженный, но справляюсь" value="Немного напряженный, но справляюсь"></el-option>
+                <el-option label="Чувствую беспокойство и стресс" value="Чувствую беспокойство и стресс"></el-option>
+                <el-option label="Усталость и эмоциональное выгорание" value="Усталость и эмоциональное выгорание"></el-option>
+                <el-option label="Чувствую себя подавленным и одиноким" value="Чувствую себя подавленным и одиноким"></el-option>
+                <el-option label="Испытываю панику или страх" value="Испытываю панику или страх"></el-option>
               </el-select>
             </div>
           </el-form-item>
@@ -32,6 +34,21 @@
             <div class="input-with-icon">
               <Document class="input-icon" />
               <el-input type="textarea" v-model="form.description" placeholder="Введите подробное описание"></el-input>
+            </div>
+            <!-- Множественный выбор тегов -->
+            <el-select v-model="selectedDescriptions" multiple placeholder="Выберите заготовки состояния" @change="handleDescriptionChange">
+              <el-option
+                  v-for="(description, index) in stateDescriptions"
+                  :key="index"
+                  :label="description"
+                  :value="description"
+              ></el-option>
+            </el-select>
+            <!-- Отображение выбранных тегов -->
+            <div class="selected-tags">
+              <el-tag v-for="(tag, index) in selectedDescriptions" :key="index" type="info" closable @close="removeTag(tag)">
+                {{ tag }}
+              </el-tag>
             </div>
           </el-form-item>
           <el-button
@@ -52,7 +69,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+
 import axios from 'axios';
+import { stateDescriptions } from '@/state/descriptions';
 
 // Импортируем иконки из Element Plus
 import { User, Calendar, Document, Download } from '@element-plus/icons-vue';
@@ -65,6 +84,21 @@ const form = ref({
   condition: '',
   description: ''
 });
+
+const selectedDescriptions = ref<string[]>([]);
+
+const handleDescriptionChange = (value: string[]) => {
+  form.value.description = value.join(', '); // Обновляем описание на основе выбранных заготовок
+};
+
+// Удаление тега
+const removeTag = (tag: string) => {
+  const index = selectedDescriptions.value.indexOf(tag);
+  if (index !== -1) {
+    selectedDescriptions.value.splice(index, 1);
+    handleDescriptionChange(selectedDescriptions.value);
+  }
+};
 
 // Состояние загрузки
 const isLoading = ref(false);
@@ -172,5 +206,9 @@ h2 {
   font-size: 1rem;
   padding: 0.75rem;
   border-radius: 5px;
+}
+
+.selected-tags {
+  margin-top: 0.5rem;
 }
 </style>
