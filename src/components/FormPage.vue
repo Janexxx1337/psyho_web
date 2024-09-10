@@ -139,13 +139,13 @@ const handleSubmit = async () => {
         recommendations: data.recommendations,
         name: form.value.name,
         age: form.value.age,
-        session_id: Date.now().toString() // Передаем session_id для продолжения диалога
+        session_id: Date.now().toString()
       }
     });
   } catch (error) {
     console.error('Ошибка при отправке формы:', error);
   } finally {
-    isLoading.value = false; // После получения ответа или ошибки сбрасываем состояние загрузки
+    isLoading.value = false;
   }
 };
 </script>

@@ -1,0 +1,7 @@
+g4f~=0.3.2.6
+curl_cffi
+asyncio
+nest_asyncio
+fastapi~=0.114.0
+uvicorn
+pydantic~=2.9.1
