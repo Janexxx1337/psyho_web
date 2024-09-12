@@ -126,7 +126,7 @@ const handleSubmit = async () => {
     formData.append('description', form.value.description);
     formData.append('session_id', Date.now().toString()); // Генерируем уникальный session_id
 
-    const { data } = await axios.post('http://localhost:8000/get_recommendations', formData, {
+    const { data } = await axios.post('http://localhost:5000/get_recommendations', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
