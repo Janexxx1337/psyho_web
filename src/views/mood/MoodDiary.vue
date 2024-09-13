@@ -37,61 +37,76 @@
       </el-form>
     </el-card>
 
-    <!-- График настроения -->
-    <div v-if="moodEntries.length" class="chart-section">
-      <h3>Динамика настроения</h3>
-      <!-- Фильтры для графика -->
-      <div class="chart-filters">
-        <el-button-group>
-          <el-button @click="filterChart('week')">Неделя</el-button>
-          <el-button @click="filterChart('month')">Месяц</el-button>
-          <el-button @click="filterChart('all')">Все</el-button>
-        </el-button-group>
-      </div>
-      <!-- Используем VueECharts с правильным именем и пропом -->
-      <VueECharts :option="chartOption" autoresize class="mood-chart" />
-    </div>
+    <!-- Вкладки для разделения контента -->
+    <el-tabs v-model="activeTab" class="mood-tabs" type="card">
+      <!-- Вкладка Динамика настроения -->
+      <el-tab-pane label="Динамика настроения" name="dynamics">
+        <div v-if="moodEntries.length" class="chart-section">
+          <h3>Динамика настроения</h3>
+          <!-- Фильтры для графика -->
+          <div class="chart-filters">
+            <el-button-group>
+              <el-button @click="filterChart('week')">Неделя</el-button>
+              <el-button @click="filterChart('month')">Месяц</el-button>
+              <el-button @click="filterChart('all')">Все</el-button>
+            </el-button-group>
+          </div>
+          <!-- Используем VueECharts с правильным именем и пропом -->
+          <VueECharts
+              ref="moodChart"
+              :option="chartOption"
+              autoresize
+              class="mood-chart"
+          />
+        </div>
+      </el-tab-pane>
 
-    <!-- Анализ настроений -->
-    <div v-if="moodAnalysis" class="analysis-section">
-      <h3>Анализ настроений</h3>
-      <el-card shadow="hover" class="analysis-card">
-        <p>{{ moodAnalysis }}</p>
-      </el-card>
-    </div>
+      <!-- Вкладка История настроений -->
+      <el-tab-pane label="История настроений" name="history">
+        <div v-if="moodEntries.length" class="history-section">
+          <h3>История настроений</h3>
+          <div class="history-container">
+            <el-collapse v-model="activeEntries">
+              <el-collapse-item
+                  v-for="(entry, index) in paginatedEntries"
+                  :key="entry.id"
+                  :title="entry.date"
+                  :name="entry.id"
+              >
+                <div class="entry-content">
+                  <div class="entry-header">
+                    <MoodIcon :rating="entry.rating" class="mood-icon" />
+                    <span class="entry-rating">{{ entry.rating }}/10</span>
+                  </div>
+                  <p class="entry-comment">{{ entry.comment }}</p>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+            <!-- Пагинация -->
+            <el-pagination
+                layout="prev, pager, next"
+                :total="moodEntries.length"
+                :page-size="entriesPerPage"
+                @current-change="handlePageChange"
+                class="pagination"
+            ></el-pagination>
+          </div>
+        </div>
+      </el-tab-pane>
 
-    <!-- История настроений с ограниченной высотой и прокруткой -->
-    <div v-if="moodEntries.length" class="history-section">
-      <h3>История настроений</h3>
-      <div class="history-container">
-        <el-collapse v-model="activeEntries">
-          <el-collapse-item
-              v-for="(entry, index) in paginatedEntries"
-              :key="entry.id"
-              :title="entry.date"
-              :name="entry.id"
-          >
-            <div class="entry-content">
-              <div class="entry-header">
-                <MoodIcon :rating="entry.rating" class="mood-icon" />
-                <span class="entry-rating">{{ entry.rating }}/10</span>
-              </div>
-              <p class="entry-comment">{{ entry.comment }}</p>
-            </div>
-          </el-collapse-item>
-        </el-collapse>
-        <!-- Пагинация -->
-        <el-pagination
-            layout="prev, pager, next"
-            :total="moodEntries.length"
-            :page-size="entriesPerPage"
-            @current-change="handlePageChange"
-            class="pagination"
-        ></el-pagination>
-      </div>
-    </div>
+      <!-- Вкладка Анализ настроений -->
+      <el-tab-pane label="Анализ настроений" name="analysis">
+        <div v-if="moodAnalysis" class="analysis-section">
+          <h3>Анализ настроений</h3>
+          <el-card shadow="hover" class="analysis-card">
+            <p>{{ moodAnalysis }}</p>
+          </el-card>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
+
 
 
 <script setup lang="ts">
@@ -305,11 +320,17 @@ const sliderMarks = {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
-
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  background-color: #f9fafc;
 }
+
+.mood-chart {
+  width: 100%;
+  height: 200px;
+}
+
 
 h2 {
   text-align: center;
