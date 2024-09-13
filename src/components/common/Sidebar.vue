@@ -7,7 +7,7 @@ import {
   Document as DocumentIcon,
   Fold,
   Expand,
-  User as UserIcon, SwitchButton,
+  User as UserIcon, SwitchButton, MagicStick,
 
 } from '@element-plus/icons-vue';
 import { authService } from '@/services/authService';
@@ -61,6 +61,12 @@ const handleLogout = () => {
         <template #title>
           <UserIcon class="input-icon" />
           <span>Профиль</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/mood-diary">
+        <template #title>
+          <MagicStick class="input-icon" />
+          <span>Дневник настроений</span>
         </template>
       </el-menu-item>
     </el-menu>

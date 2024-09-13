@@ -7,6 +7,7 @@ import SessionDetails from '../views/history/SessionDetails.vue';
 import Login from '@/views/user/Login.vue';
 import Register from '@/views/user/Register.vue';
 import UserProfile from '../views/user/UserProfile.vue';
+import MoodDiary from "@/views/mood/MoodDiary.vue";
 
 const routes = [
     {
@@ -43,6 +44,12 @@ const routes = [
         path: '/register',
         name: 'Register',
         component: Register,
+    },
+    {
+        path: '/mood-diary',
+        name: 'MoodDiary',
+        component: MoodDiary,
+        meta: { requiresAuth: true }, // Требуется авторизация
     },
     {
         path: '/profile',
