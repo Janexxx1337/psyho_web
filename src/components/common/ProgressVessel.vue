@@ -35,7 +35,7 @@
           stroke-width="4"
       />
       <!-- Процент внутри сосуда -->
-      <text x="100" y="200" text-anchor="middle" font-size="40" fill="#fff" stroke="#000" stroke-width="1" paint-order="stroke">
+      <text x="100" y="200" text-anchor="middle" font-size="40" fill="#000" stroke="#000" stroke-width="1" paint-order="stroke">
         {{ percentage }}%
       </text>
     </svg>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import anime from 'animejs';
 
 // Правильно получаем доступ к пропсам
@@ -60,8 +60,7 @@ const vesselSvg = ref(null);
 const waterLevel = computed(() => {
   const maxY = 340; // Минимальный уровень воды (пустой сосуд)
   const minY = 40;  // Максимальный уровень воды (полный сосуд)
-  const level = maxY - ((maxY - minY) * (percentage / 100));
-  return level;
+  return maxY - ((maxY - minY) * (percentage / 100));
 });
 
 // Путь для воды с волной

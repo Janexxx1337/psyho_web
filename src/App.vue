@@ -5,14 +5,15 @@ import Sidebar from './components/common/Sidebar.vue';
 import { authService } from './services/authService';
 
 const isAuthenticated = computed(() => !!authService.currentUser.value);
+const isMobile = computed(() => window.innerWidth <= 768); // Определяем мобильное устройство
 </script>
 
 <template>
   <el-container>
-    <!-- Сайдбар отображается, если пользователь авторизован -->
-    <Sidebar v-if="isAuthenticated" />
+    <!-- Сайдбар отображается, если пользователь авторизован и не на мобильном устройстве -->
+    <Sidebar v-if="isAuthenticated && !isMobile" />
     <!-- Основное содержимое -->
-    <el-main :style="{ marginLeft: isAuthenticated ? '200px' : '0' }">
+    <el-main :style="{ marginLeft: isAuthenticated && !isMobile ? '200px' : '0' }">
       <RouterView />
     </el-main>
   </el-container>
@@ -26,6 +27,7 @@ const isAuthenticated = computed(() => !!authService.currentUser.value);
 .el-main {
   padding: 20px;
   overflow: hidden;
+  transition: margin-left 0.3s;
 }
 
 .main-container {
@@ -34,13 +36,14 @@ const isAuthenticated = computed(() => !!authService.currentUser.value);
 }
 
 :deep(svg.input-icon) {
-  width:20px;
+  width: 20px;
   height: 20px;
 }
 
 @media (max-width: 768px) {
-  .main-container {
-    margin-left: 64px;
+  .main-container,
+  .el-main {
+    margin-left: 0!important;
   }
 }
 </style>

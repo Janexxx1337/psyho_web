@@ -120,17 +120,17 @@ const progressPercentage = computed(() => {
 
 const nickname = computed(() => {
   const score = correctAnswers.value;
-  if (score >= 23) {
+  if (score >= 14) {
     return {
       title: 'Эксперт Логики',
       image: new URL('@/assets/icons/expert.svg', import.meta.url).href,
     };
-  } else if (score >= 15) {
+  } else if (score >= 10) {
     return {
       title: 'Профи Логики',
       image: new URL('@/assets/icons/profi.svg', import.meta.url).href,
     };
-  } else if (score >= 8) {
+  } else if (score >= 6) {
     return {
       title: 'Ученик Логики',
       image: new URL('@/assets/icons/scholar.svg', import.meta.url).href,
@@ -142,6 +142,7 @@ const nickname = computed(() => {
     };
   }
 });
+
 
 const nextQuestion = async () => {
   if (!userAnswer.value) return;
@@ -169,7 +170,7 @@ const retakeTest = () => {
 };
 
 const goBack = () => {
-  router.push('/tests');
+  router.push('/Logic');
 };
 </script>
 

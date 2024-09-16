@@ -1,26 +1,19 @@
 <!-- components/Sidebar.vue -->
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import {
   Menu as MenuIcon,
   Document as DocumentIcon,
-  Fold,
-  Expand,
-  User as UserIcon, SwitchButton, MagicStick, SwitchFilled,
-
+  User as UserIcon,
+  SwitchButton,
+  MagicStick,
+  SwitchFilled,
 } from '@element-plus/icons-vue';
 import { authService } from '@/services/authService';
 
-
 const router = useRouter();
 const route = useRoute();
-
-const isCollapsed = ref(false);
-
-const toggleCollapse = () => {
-  isCollapsed.value = !isCollapsed.value;
-};
 
 const currentUser = computed(() => authService.currentUser.value);
 
@@ -31,60 +24,75 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <el-aside :width="isCollapsed ? '64px' : '200px'" class="sidebar">
-    <div class="toggle-button" @click="toggleCollapse">
-      <el-icon>
-        <component :is="isCollapsed ? Expand : Fold" />
-      </el-icon>
-    </div>
-    <el-menu
-        :default-active="route.path"
-        :collapse="isCollapsed"
-        router
-        background-color="#2d3a4b"
-        text-color="#bfcbd9"
-        active-text-color="#409EFF"
-    >
-      <el-menu-item index="/">
-        <template #title>
+  <div>
+    <!-- Боковое меню для десктопа -->
+    <el-aside class="sidebar" width="200px">
+      <el-menu
+          :default-active="route.path"
+          router
+          background-color="#2d3a4b"
+          text-color="#bfcbd9"
+          active-text-color="#409EFF"
+      >
+        <!-- Пункты меню -->
+        <el-menu-item index="/">
           <MenuIcon class="input-icon" />
           <span>Доктор ИИ</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/Logic">
-        <template #title>
+        </el-menu-item>
+        <el-menu-item index="/Logic">
           <SwitchFilled class="input-icon" />
           <span>Тест: Логика</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/history">
-        <template #title>
+        </el-menu-item>
+        <el-menu-item index="/history">
           <DocumentIcon class="input-icon" />
           <span>История</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/profile">
-        <template #title>
+        </el-menu-item>
+        <el-menu-item index="/profile">
           <UserIcon class="input-icon" />
           <span>Профиль</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/mood-diary">
-        <template #title>
+        </el-menu-item>
+        <el-menu-item index="/mood-diary">
           <MagicStick class="input-icon" />
           <span>Дневник настроений</span>
-        </template>
-      </el-menu-item>
-    </el-menu>
-    <div v-if="currentUser" class="logout-section">
-      <el-button type="text" @click="handleLogout">
-        <SwitchButton class="input-icon" /> <span>Выйти</span>
-      </el-button>
-    </div>
-  </el-aside>
+        </el-menu-item>
+      </el-menu>
+      <div v-if="currentUser" class="logout-section">
+        <el-button type="text" @click="handleLogout">
+          <SwitchButton class="input-icon" /> <span>Выйти</span>
+        </el-button>
+      </div>
+    </el-aside>
+
+    <!-- Нижнее меню для мобильных устройств -->
+    <nav class="bottom-nav">
+      <el-row type="flex" justify="space-around" align="middle">
+        <button @click="router.push('/')" :class="{ active: route.path === '/' }">
+          <MenuIcon class="input-icon" />
+          <span>Главная</span>
+        </button>
+        <button @click="router.push('/Logic')" :class="{ active: route.path === '/Logic' }">
+          <SwitchFilled class="input-icon" />
+          <span>Логика</span>
+        </button>
+        <button @click="router.push('/history')" :class="{ active: route.path === '/history' }">
+          <DocumentIcon class="input-icon" />
+          <span>История</span>
+        </button>
+        <button @click="router.push('/profile')" :class="{ active: route.path === '/profile' }">
+          <UserIcon class="input-icon" />
+          <span>Профиль</span>
+        </button>
+        <button @click="router.push('/mood-diary')" :class="{ active: route.path === '/mood-diary' }">
+          <MagicStick class="input-icon" />
+          <span>Дневник</span>
+        </button>
+      </el-row>
+    </nav>
+  </div>
 </template>
 
 <style scoped>
+/* Стили для бокового меню */
 .sidebar {
   background-color: #2d3a4b;
   color: #fff;
@@ -92,15 +100,12 @@ const handleLogout = () => {
   position: fixed;
   left: 0;
   top: 0;
-  transition: width 0.3s;
+  width: 200px;
 }
 
-.toggle-button {
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px;
-  cursor: pointer;
-  color: #fff;
+svg {
+  width: 24px;
+  height: 24px;
 }
 
 .el-menu {
@@ -129,7 +134,7 @@ const handleLogout = () => {
 }
 
 .input-icon {
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .logout-section {
@@ -137,11 +142,68 @@ const handleLogout = () => {
   margin-left: 8px;
 }
 
-span {
-  margin-left: 10px;
-}
-
 .logout-section .el-button {
   color: #fff;
+}
+
+/* Стили для нижнего меню */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px 0;
+  width: 100%;
+  background-color: #2d3a4b;
+  color: #fff;
+  border-top: 1px solid #1d2733;
+  z-index: 1000;
+}
+
+.bottom-nav .el-row {
+  margin: 0;
+}
+
+.bottom-nav .el-col {
+  text-align: center;
+  padding: 10px 0;
+  color: #bfcbd9;
+  cursor: pointer;
+}
+
+.bottom-nav .input-icon {
+  font-size: 24px;
+}
+
+.bottom-nav .el-col span {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.bottom-nav .active {
+  color: #409EFF;
+}
+
+.bottom-nav .active .input-icon {
+  color: #409EFF;
+}
+
+
+button {
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .bottom-nav {
+    display: block;
+  }
 }
 </style>

@@ -1,24 +1,33 @@
 <!-- components/UserProfile.vue -->
 <template>
-  <div class="profile-container">
-    <h2>Профиль пользователя</h2>
-    <el-form :model="userData" @submit.prevent="updateProfile">
-      <el-form-item label="Имя пользователя">
-        <el-input v-model="userData.username" disabled />
-      </el-form-item>
-      <!-- Добавьте другие поля профиля по необходимости -->
-      <el-form-item label="Новый пароль">
-        <el-input
-            v-model="userData.newPassword"
-            type="password"
-            placeholder="Оставьте пустым, чтобы не изменять"
-            clearable
-        />
-      </el-form-item>
-      <el-button type="primary" native-type="submit">
-        Обновить профиль
-      </el-button>
-    </el-form>
+  <div class="profile-page">
+    <el-card class="profile-container">
+      <div class="profile-header">
+        <el-avatar
+            class="profile-avatar"
+            size="80"
+            src="https://example.com/default-avatar.png"
+        ></el-avatar>
+        <h2>{{ userData.username }}</h2>
+      </div>
+      <el-form :model="userData" @submit.prevent="updateProfile" label-position="top">
+        <!-- Добавьте другие поля профиля по необходимости -->
+        <el-form-item label="Новый пароль">
+          <el-input
+              v-model="userData.newPassword"
+              type="password"
+              placeholder="Оставьте пустым, чтобы не изменять"
+              clearable
+              prefix-icon="lock"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" native-type="submit" round>
+            Обновить профиль
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
@@ -51,9 +60,28 @@ const updateProfile = () => {
 </script>
 
 <style scoped>
+.profile-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
 .profile-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 400px;
+  padding: 20px;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  margin-bottom: 10px;
+}
+
+.el-form-item {
+  margin-bottom: 20px;
 }
 </style>
