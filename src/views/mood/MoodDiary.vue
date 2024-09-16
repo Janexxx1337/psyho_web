@@ -1,7 +1,6 @@
 <template>
   <div class="mood-diary">
     <h2>Мой Дневник Настроения 📖</h2>
-
     <!-- Карточка для формы ввода -->
     <el-card class="entry-card">
       <div class="form-header">
@@ -106,8 +105,6 @@
     </el-tabs>
   </div>
 </template>
-
-
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
