@@ -39,7 +39,12 @@
                 </div>
                 <div class="content">
                   <p v-html="message.content"></p>
-                  <span class="timestamp">{{ message.timestamp }}</span>
+                  <div class="message-meta">
+                    <el-icon @click="voiceMessage(message)" class="voice-icon" :aria-label="'Озвучить сообщение'">
+                      <Microphone />
+                    </el-icon>
+                    <span class="timestamp">{{ message.timestamp }}</span>
+                  </div>
                 </div>
               </div>
             </transition-group>
@@ -87,7 +92,6 @@
   </el-container>
 </template>
 
-
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -101,7 +105,9 @@ import {
   Position,
   Printer,
   Back,
-  ChatLineRound, Download,
+  ChatLineRound,
+  Download,
+  Microphone,
 } from '@element-plus/icons-vue';
 
 interface Message {
@@ -124,10 +130,6 @@ const loading = ref(false);
 const sessionId = ref(route.params.session_id);
 
 const conversationHistory = ref<Message[]>([]);
-
-// Используем иконки вместо аватаров
-const userAvatarIcon = User;
-const assistantAvatarIcon = ChatLineRound;
 
 // Ссылка на контейнер чата для автопрокрутки
 const chatContainer = ref<HTMLElement | null>(null);
@@ -243,6 +245,20 @@ const saveRecommendation = async () => {
   }
 };
 
+// Функция озвучивания сообщения
+const voiceMessage = (message: Message) => {
+  if ('speechSynthesis' in window) {
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+    }
+    const utterance = new SpeechSynthesisUtterance(message.content);
+    utterance.lang = 'ru-RU'; // Устанавливаем язык на русский
+    speechSynthesis.speak(utterance);
+  } else {
+    console.error('Text-to-speech not supported.');
+    ElMessage.error('Ваш браузер не поддерживает озвучивание сообщений.');
+  }
+};
 </script>
 
 <style scoped>
@@ -349,12 +365,28 @@ const saveRecommendation = async () => {
   color: #333;
 }
 
-.message .content .timestamp {
-  display: block;
+/* Стили для метаданных сообщения */
+.message-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.message-meta .voice-icon {
+  cursor: pointer;
+  margin-right: 0.5rem;
+  color: #409eff;
+  transition: color 0.3s;
+}
+
+.message-meta .voice-icon:hover {
+  color: #66b1ff;
+}
+
+.message-meta .timestamp {
   font-size: 0.75rem;
   color: #999;
-  margin-top: 0.5rem;
-  text-align: right;
 }
 
 /* Поле ввода */

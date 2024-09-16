@@ -45,7 +45,7 @@ const handleLogout = () => {
         </el-menu-item>
         <el-menu-item index="/history">
           <DocumentIcon class="input-icon" />
-          <span>История</span>
+          <span>Сессии</span>
         </el-menu-item>
         <el-menu-item index="/profile">
           <UserIcon class="input-icon" />
@@ -80,7 +80,7 @@ const handleLogout = () => {
         </button>
         <button @click="router.push('/history')" :class="{ active: route.path === '/history' }">
           <DocumentIcon class="input-icon" />
-          <span>История</span>
+          <span>Сессии</span>
         </button>
         <button @click="router.push('/profile')" :class="{ active: route.path === '/profile' }">
           <UserIcon class="input-icon" />

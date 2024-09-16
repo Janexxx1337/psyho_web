@@ -114,6 +114,8 @@ const incorrectAnswers = computed(() => {
   );
 });
 
+
+
 const progressPercentage = computed(() => {
   return Math.round(((currentQuestionIndex.value) / totalQuestions.value) * 100);
 });
