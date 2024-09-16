@@ -333,7 +333,6 @@ h2 {
   text-align: center;
   margin-bottom: 2rem;
   color: #333;
-  font-family: 'Dancing Script', cursive;
   font-size: 2.5rem;
 }
 

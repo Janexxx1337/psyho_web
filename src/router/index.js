@@ -9,13 +9,20 @@ import Login from '@/views/user/Login.vue';
 import Register from '@/views/user/Register.vue';
 import UserProfile from '../views/user/UserProfile.vue';
 import MoodDiary from "@/views/mood/MoodDiary.vue";
-import { authService } from '@/services/authService'; // Импортируем authService
+import LogicPage from '@/views/tests/LogicPage.vue';
+import { authService } from '@/services/authService';
 
 const routes = [
     {
         path: '/',
         name: 'FormPage',
         component: FormPage,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/Logic',
+        name: 'LogicPage',
+        component: LogicPage,
         meta: { requiresAuth: true },
     },
     {

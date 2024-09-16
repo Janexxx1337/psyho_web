@@ -19,6 +19,10 @@ const isAuthenticated = computed(() => !!authService.currentUser.value);
 </template>
 
 <style scoped>
+* {
+  font-family: "Lato", sans-serif;
+}
+
 .el-main {
   padding: 20px;
   overflow: hidden;

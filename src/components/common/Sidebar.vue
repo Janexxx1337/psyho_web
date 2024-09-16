@@ -7,7 +7,7 @@ import {
   Document as DocumentIcon,
   Fold,
   Expand,
-  User as UserIcon, SwitchButton, MagicStick,
+  User as UserIcon, SwitchButton, MagicStick, SwitchFilled,
 
 } from '@element-plus/icons-vue';
 import { authService } from '@/services/authService';
@@ -48,7 +48,13 @@ const handleLogout = () => {
       <el-menu-item index="/">
         <template #title>
           <MenuIcon class="input-icon" />
-          <span>Главная</span>
+          <span>Доктор ИИ</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/Logic">
+        <template #title>
+          <SwitchFilled class="input-icon" />
+          <span>Тест: Логика</span>
         </template>
       </el-menu-item>
       <el-menu-item index="/history">
