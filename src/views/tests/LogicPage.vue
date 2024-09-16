@@ -4,46 +4,9 @@
     <p>{{ test.description }}</p>
 
     <div v-if="!isTestCompleted">
-      <div class="progress-container">
-        <svg ref="vesselSvg" viewBox="0 0 200 400" class="vessel-svg">
-          <!-- Фон сосуда -->
-          <path
-              d="M50,20 L150,20 C160,20 160,30 160,40 L160,340 C160,360 140,380 100,380 C60,380 40,360 40,340 L40,40 C40,30 40,20 50,20 Z"
-              fill="#fff"
-              stroke="#409EFF"
-              stroke-width="4"
-          />
-          <!-- Вода -->
-          <g clip-path="url(#vesselClip)">
-            <path
-                class="water"
-                :d="waterPath"
-                fill="#409EFF"
-            ></path>
-            <!-- Пузырьки -->
-            <g class="bubbles"></g>
-          </g>
-          <!-- Клиппинг для воды -->
-          <defs>
-            <clipPath id="vesselClip">
-              <path
-                  d="M50,20 L150,20 C160,20 160,30 160,40 L160,340 C160,360 140,380 100,380 C60,380 40,360 40,340 L40,40 C40,30 40,20 50,20 Z"
-              />
-            </clipPath>
-          </defs>
-          <!-- Контур сосуда поверх воды -->
-          <path
-              d="M50,20 L150,20 C160,20 160,30 160,40 L160,340 C160,360 140,380 100,380 C60,380 40,360 40,340 L40,40 C40,30 40,20 50,20 Z"
-              fill="none"
-              stroke="#409EFF"
-              stroke-width="4"
-          />
-          <!-- Процент внутри сосуда -->
-          <text x="100" y="200" text-anchor="middle" font-size="40" fill="#fff" stroke="#000" stroke-width="1" paint-order="stroke">
-            {{ progressPercentage }}%
-          </text>
-        </svg>
-      </div>
+      <!-- Используем компонент VesselAnimation -->
+      <ProgressVessel :percentage="progressPercentage" />
+
       <p class="question-number">Вопрос {{ currentQuestionIndex + 1 }} из {{ totalQuestions }}</p>
 
       <transition name="fade" mode="out-in">
@@ -88,7 +51,7 @@
         <p class="nickname-title">{{ nickname.title }}</p>
       </div>
 
-      <!-- Добавлен аккордеон с неправильными ответами -->
+      <!-- Аккордеон с неправильными ответами -->
       <el-collapse v-if="incorrectAnswers.length" class="incorrect-answers">
         <el-collapse-item
             v-for="(answer, index) in incorrectAnswers"
@@ -108,10 +71,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { logicTest } from '@/state/tests/logicTest';
-import anime from 'animejs';
+
+// Импортируем новый компонент
+import ProgressVessel from '@/components/common/ProgressVessel.vue';
 
 const router = useRouter();
 
@@ -120,8 +85,6 @@ const currentQuestionIndex = ref(0);
 const userAnswer = ref(null);
 const answers = ref([]);
 const isSubmitting = ref(false);
-
-const vesselSvg = ref(null);
 
 const currentQuestion = computed(() => {
   return test.value.questions[currentQuestionIndex.value];
@@ -155,28 +118,6 @@ const progressPercentage = computed(() => {
   return Math.round(((currentQuestionIndex.value) / totalQuestions.value) * 100);
 });
 
-// Уровень воды в зависимости от прогресса
-const waterLevel = computed(() => {
-  const maxY = 340; // Минимальный уровень воды (пустой сосуд)
-  const minY = 40;  // Максимальный уровень воды (полный сосуд)
-  const level = maxY - ((maxY - minY) * (progressPercentage.value / 100));
-  return level;
-});
-
-// Путь для воды с волной
-const waterPath = computed(() => {
-  const amplitude = 20; // Амплитуда волны
-  const wavelength = 600; // Увеличили длину волны
-  const offset = -300; // Увеличили смещение волны по оси X
-
-  return `
-    M${offset},${waterLevel.value}
-    C${offset + wavelength / 4},${waterLevel.value - amplitude} ${offset + wavelength / 4},${waterLevel.value + amplitude} ${offset + wavelength / 2},${waterLevel.value}
-    S${offset + (3 * wavelength) / 4},${waterLevel.value - amplitude} ${offset + wavelength},${waterLevel.value}
-    L${offset + wavelength},400 L${offset},400 Z
-  `;
-});
-
 const nickname = computed(() => {
   const score = correctAnswers.value;
   if (score >= 23) {
@@ -201,58 +142,6 @@ const nickname = computed(() => {
     };
   }
 });
-
-// Функция для создания пузырьков
-const createBubbles = () => {
-  const bubblesGroup = vesselSvg.value.querySelector('.bubbles');
-  bubblesGroup.innerHTML = ''; // Очистка предыдущих пузырьков
-
-  for (let i = 0; i < 10; i++) {
-    const bubble = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    const size = Math.random() * 5 + 2;
-    bubble.setAttribute('cx', Math.random() * 200);
-    bubble.setAttribute('cy', waterLevel.value + Math.random() * (400 - waterLevel.value));
-    bubble.setAttribute('r', size);
-    bubble.setAttribute('fill', '#fff');
-    bubblesGroup.appendChild(bubble);
-
-    anime({
-      targets: bubble,
-      cy: waterLevel.value - 20,
-      opacity: [1, 0],
-      duration: Math.random() * 2000 + 2000,
-      easing: 'linear',
-      delay: Math.random() * 2000,
-      complete: () => {
-        bubble.remove();
-      }
-    });
-  }
-};
-
-onMounted(() => {
-  animateWave();
-  createBubbles();
-});
-
-watch(waterLevel, () => {
-  animateWave();
-  createBubbles();
-});
-
-// Анимация волны с помощью anime.js
-const animateWave = () => {
-  const water = vesselSvg.value.querySelector('.water');
-  anime.remove(water); // Удаляем предыдущие анимации
-  anime({
-    targets: water,
-    translateX: ['-100', '100'], // Увеличили смещение
-    duration: 4000,
-    easing: 'linear',
-    direction: 'alternate',
-    loop: true,
-  });
-};
 
 const nextQuestion = async () => {
   if (!userAnswer.value) return;
@@ -299,17 +188,6 @@ h1 {
 p {
   text-align: center;
   margin-bottom: 30px;
-}
-
-.progress-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.vessel-svg {
-  width: 120px; /* Увеличили ширину */
-  height: 240px; /* Пропорционально увеличили высоту */
 }
 
 .question-number {
@@ -408,6 +286,7 @@ p {
   max-width: 600px;
 }
 
+/* Адаптивность для мобильных устройств */
 @media (max-width: 600px) {
   .question {
     font-size: 1.1em;
@@ -415,11 +294,6 @@ p {
 
   .option-radio {
     font-size: 0.9em;
-  }
-
-  .vessel-svg {
-    width: 100px;
-    height: 200px;
   }
 }
 </style>
