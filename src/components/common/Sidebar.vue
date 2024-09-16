@@ -55,13 +55,17 @@ const handleLogout = () => {
           <MagicStick class="input-icon" />
           <span>Дневник настроений</span>
         </el-menu-item>
+
+        <!-- Разделитель перед кнопкой "Выйти" -->
+        <el-menu-item-group>
+          <el-menu-item index="logout" @click="handleLogout">
+            <SwitchButton class="input-icon" />
+            <span>Выйти</span>
+          </el-menu-item>
+        </el-menu-item-group>
       </el-menu>
-      <div v-if="currentUser" class="logout-section">
-        <el-button type="text" @click="handleLogout">
-          <SwitchButton class="input-icon" /> <span>Выйти</span>
-        </el-button>
-      </div>
     </el-aside>
+
 
     <!-- Нижнее меню для мобильных устройств -->
     <nav class="bottom-nav">

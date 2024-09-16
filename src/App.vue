@@ -27,10 +27,9 @@ const isMobile = computed(() => window.innerWidth <= 768); // Определяе
 .el-main {
   padding: 20px;
   overflow: hidden;
-  transition: margin-left 0.3s;
 }
 
-.main-container {
+.main-container, .el-main {
   margin-left: 200px;
   transition: margin-left 0.3s;
 }

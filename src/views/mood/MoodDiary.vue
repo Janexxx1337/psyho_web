@@ -420,6 +420,10 @@ h2 {
   margin-bottom: 1rem;
 }
 
+.el-form-item {
+  margin-top: 10px;
+}
+
 v-chart {
   width: 100%;
   height: 400px;
