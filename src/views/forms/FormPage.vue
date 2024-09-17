@@ -88,14 +88,14 @@
             >
               Далее
             </el-button>
-            <el-button
-                v-if="activeStep === 2"
-                type="success"
-                @click="handleSubmit"
-                :loading="isLoading"
-            >
-              <Download /> Отправить
-            </el-button>
+              <el-button
+                  v-if="activeStep === 2"
+                  type="success"
+                  @click="handleSubmit"
+                  :loading="isLoading"
+              >
+                <Download /> Отправить
+              </el-button>
           </div>
         </el-form>
       </el-card>
@@ -110,6 +110,10 @@ import axios from 'axios';
 
 // Импорт иконок из Element Plus
 import { User, Calendar, Download } from '@element-plus/icons-vue';
+
+import { useUserActivitiesStore } from '@/stores/userActivities';
+
+const userActivitiesStore = useUserActivitiesStore();
 
 interface FormModel {
   name: string;
@@ -194,7 +198,6 @@ const handleSubmit = () => {
             }
         );
 
-        // Переход на страницу с рекомендациями
         await router.push({
           name: 'RecommendationsPage',
           params: {
@@ -207,6 +210,14 @@ const handleSubmit = () => {
             session_id: sessionId,
           },
         });
+
+        const activity = 'Данные успешно отправлены из компонента SubmitButton';
+        const date = new Date();
+
+        console.log('Добавление активности в store:', { date, activity });
+        // Используем store для добавления активности
+        userActivitiesStore.addActivity(date, activity);
+
       } catch (error) {
         console.error('Ошибка при отправке формы:', error);
       } finally {
@@ -218,6 +229,7 @@ const handleSubmit = () => {
   });
 };
 </script>
+
 
 <style scoped>
 .app-container {

@@ -1,23 +1,27 @@
+<template>
+  <el-config-provider :locale="ruLocale">
+    <el-container>
+      <!-- Сайдбар отображается, если пользователь авторизован и не на мобильном устройстве -->
+      <Sidebar v-if="isAuthenticated && !isMobile" />
+      <!-- Основное содержимое -->
+      <el-main :style="{ marginLeft: isAuthenticated && !isMobile ? '200px' : '0' }">
+        <RouterView />
+      </el-main>
+    </el-container>
+  </el-config-provider>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RouterView } from 'vue-router';
 import Sidebar from './components/common/Sidebar.vue';
 import { authService } from './services/authService';
+import { ElConfigProvider } from 'element-plus';
+import ruLocale from 'element-plus/es/locale/lang/ru';
 
 const isAuthenticated = computed(() => !!authService.currentUser.value);
-const isMobile = computed(() => window.innerWidth <= 768); // Определяем мобильное устройство
+const isMobile = computed(() => window.innerWidth <= 768);
 </script>
-
-<template>
-  <el-container>
-    <!-- Сайдбар отображается, если пользователь авторизован и не на мобильном устройстве -->
-    <Sidebar v-if="isAuthenticated && !isMobile" />
-    <!-- Основное содержимое -->
-    <el-main :style="{ marginLeft: isAuthenticated && !isMobile ? '200px' : '0' }">
-      <RouterView />
-    </el-main>
-  </el-container>
-</template>
 
 <style scoped>
 * {
