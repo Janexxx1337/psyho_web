@@ -211,7 +211,7 @@ const handleSubmit = () => {
           },
         });
 
-        const activity = 'Данные успешно отправлены из компонента SubmitButton';
+        const activity = 'Был посещен сеанс с доктором ИИ';
         const date = new Date();
 
         console.log('Добавление активности в store:', { date, activity });

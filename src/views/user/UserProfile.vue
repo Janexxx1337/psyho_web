@@ -18,7 +18,7 @@
               type="password"
               placeholder="Оставьте пустым, чтобы не изменять"
               clearable
-              prefix-icon="el-icon-lock"
+              prefix-icon="lock"
           />
         </el-form-item>
         <el-form-item>
