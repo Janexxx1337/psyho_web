@@ -8,7 +8,7 @@
         <MoodIcon :rating="moodRating" class="mood-icon-large" />
       </div>
       <el-form @submit.prevent="saveMoodEntry" class="mood-form">
-        <el-form-item label="Оцените ваше настроение">
+        <el-form-item class="slider-form" label="Оцените ваше настроение">
           <el-slider
               v-model="moodRating"
               :min="1"
@@ -19,6 +19,7 @@
         </el-form-item>
         <el-form-item label="Комментарий">
           <el-input
+              class="comment-text"
               type="textarea"
               v-model="moodComment"
               placeholder="Опишите ваше настроение"
@@ -421,7 +422,13 @@ h2 {
 }
 
 .el-form-item {
+  display: flex;
   margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+:deep(.slider-form .el-slider) {
+  min-width: 200px;
 }
 
 v-chart {
@@ -441,6 +448,13 @@ v-chart {
 /* Фоновые стили */
 body {
   background-color: #f0eae1;
+}
+
+.comment-text {
+  min-width: 200px;
+}
+:deep(.el-form-item__content) {
+  min-width: auto;
 }
 
 @media (max-width: 768px) {
