@@ -3,9 +3,23 @@
   <div>
     <el-calendar
         v-model="currentDate"
-        :date-cell-render="dateCellRender"
         :locale="ruLocale"
-    />
+    >
+      <template #date-cell="{ data }">
+        <div
+            class="activity-cell"
+            @click="handleDateClick(data)"
+        >
+          <div class="date-number">{{ data.day.split('-')[2] }}</div>
+          <div v-if="hasActivity(data)" class="activity-dot"></div>
+          <div v-if="hasActivity(data)" class="activity-count">
+            {{ getActivityCount(data) }}
+          </div>
+        </div>
+      </template>
+    </el-calendar>
+
+    <!-- Диалоговое окно с деталями активности -->
     <el-dialog
         v-model="dialogVisible"
         :title="dialogTitle"
@@ -41,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h, computed } from 'vue';
+import { ref, computed } from 'vue';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import ruLocale from 'element-plus/es/locale/lang/ru';
@@ -59,32 +73,27 @@ const newActivity = ref('');
 
 const userActivitiesStore = useUserActivitiesStore();
 
-const dateCellRender = ({ date }) => {
-  const activityDate = dayjs(date).format('YYYY-MM-DD');
-  const activities = userActivitiesStore.activities[activityDate];
-  const hasActivity = !!activities && activities.length > 0;
-
-  return h(
-      'div',
-      {
-        class: 'activity-cell',
-        onClick: () => handleDateClick(activityDate),
-        style: { cursor: 'pointer' },
-      },
-      [
-        h('div', { class: 'date-number' }, dayjs(date).date()),
-        hasActivity && h('div', { class: 'activity-dot' }),
-        hasActivity && h('div', { class: 'activity-count' }, activities.length),
-      ]
-  );
+// Функция для проверки наличия активности на дату
+const hasActivity = (data: any) => {
+  const activityDate = data.day;
+  return !!userActivitiesStore.activities[activityDate];
 };
 
-const handleDateClick = (date: string) => {
-  selectedDate.value = date;
-  selectedActivities.value = userActivitiesStore.activities[date] || [];
+// Функция для получения количества активностей на дату
+const getActivityCount = (data: any) => {
+  const activityDate = data.day;
+  const activities = userActivitiesStore.activities[activityDate];
+  return activities ? activities.length : 0;
+};
+
+// Обработчик клика по дате
+const handleDateClick = (data: any) => {
+  selectedDate.value = data.day;
+  selectedActivities.value = userActivitiesStore.activities[selectedDate.value] || [];
   dialogVisible.value = true;
 };
 
+// Функция для добавления активности
 const addActivity = () => {
   if (newActivity.value.trim() === '') {
     ElMessage.warning('Пожалуйста, введите описание события.');
@@ -96,6 +105,7 @@ const addActivity = () => {
   ElMessage.success('Событие добавлено.');
 };
 
+// Форматирование заголовка диалога
 const formatDate = (date: string) => {
   return dayjs(date).format('D MMMM YYYY');
 };
@@ -106,11 +116,13 @@ const dialogTitle = computed(() => `Активность за ${formatDate(selec
 <style scoped>
 .activity-cell {
   position: relative;
+  padding: 4px;
+  cursor: pointer;
 }
 
 .date-number {
   text-align: right;
-  padding: 4px;
+  font-size: 14px;
 }
 
 .activity-dot {
