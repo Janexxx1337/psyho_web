@@ -1,4 +1,3 @@
-<!-- src/components/UserActivityCalendar.vue -->
 <template>
   <div>
     <el-calendar
@@ -6,15 +5,31 @@
         :locale="ruLocale"
     >
       <template #date-cell="{ data }">
-        <div
-            class="activity-cell"
-            @click="handleDateClick(data)"
-        >
+        <div class="activity-cell">
           <div class="date-number">{{ data.day.split('-')[2] }}</div>
-          <div v-if="hasActivity(data)" class="activity-dot"></div>
-          <div v-if="hasActivity(data)" class="activity-count">
-            {{ getActivityCount(data) }}
-          </div>
+          <!-- Индикатор активности с тултипом -->
+          <el-tooltip
+              v-if="hasActivity(data)"
+              :content="getActivitiesDescription(data)"
+              placement="top"
+              effect="dark"
+          >
+            <div
+                :class="['activity-dot', getActivityClass(data)]"
+                @click="openActivityDialog(data.day)"
+            ></div>
+          </el-tooltip>
+          <!-- Кнопка добавления события с тултипом -->
+          <el-tooltip content="Добавить событие" placement="top">
+            <el-button
+                icon="Plus"
+                @click="handleAddActivityClick(data.day)"
+                class="add-activity-button"
+                circle
+                size="small"
+                type="primary"
+            ></el-button>
+          </el-tooltip>
         </div>
       </template>
     </el-calendar>
@@ -24,6 +39,7 @@
         v-model="dialogVisible"
         :title="dialogTitle"
         width="500px"
+        :lock-scroll="false"
     >
       <div>
         <el-form @submit.prevent="addActivity" class="add-activity-form">
@@ -60,7 +76,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import ruLocale from 'element-plus/es/locale/lang/ru';
 import { ElMessage } from 'element-plus';
-import { Edit, Document } from '@element-plus/icons-vue';
+import { Edit, Document, Plus } from '@element-plus/icons-vue';
 import { useUserActivitiesStore } from '@/stores/userActivities';
 
 dayjs.locale('ru');
@@ -73,27 +89,53 @@ const newActivity = ref('');
 
 const userActivitiesStore = useUserActivitiesStore();
 
-// Функция для проверки наличия активности на дату
+// Проверка наличия активности на дату
 const hasActivity = (data: any) => {
   const activityDate = data.day;
   return !!userActivitiesStore.activities[activityDate];
 };
 
-// Функция для получения количества активностей на дату
+// Получение количества активностей на дату
 const getActivityCount = (data: any) => {
   const activityDate = data.day;
   const activities = userActivitiesStore.activities[activityDate];
   return activities ? activities.length : 0;
 };
 
-// Обработчик клика по дате
-const handleDateClick = (data: any) => {
-  selectedDate.value = data.day;
-  selectedActivities.value = userActivitiesStore.activities[selectedDate.value] || [];
+// Получение класса для индикатора активности в зависимости от количества событий
+const getActivityClass = (data: any) => {
+  const count = getActivityCount(data);
+  if (count >= 3) return 'activity-dot-red';
+  if (count === 2) return 'activity-dot-yellow';
+  if (count === 1) return 'activity-dot-blue';
+  return '';
+};
+
+// Получение описания активностей для тултипа
+const getActivitiesDescription = (data: any) => {
+  const activityDate = data.day;
+  const activities = userActivitiesStore.activities[activityDate];
+  if (activities && activities.length > 0) {
+    return activities.join('\n');
+  }
+  return '';
+};
+
+// Открытие диалога для просмотра активностей
+const openActivityDialog = (date: string) => {
+  selectedDate.value = date;
+  selectedActivities.value = userActivitiesStore.activities[date] || [];
   dialogVisible.value = true;
 };
 
-// Функция для добавления активности
+// Обработчик клика по кнопке добавления события
+const handleAddActivityClick = (date: string) => {
+  selectedDate.value = date;
+  selectedActivities.value = userActivitiesStore.activities[date] || [];
+  dialogVisible.value = true;
+};
+
+// Добавление новой активности
 const addActivity = () => {
   if (newActivity.value.trim() === '') {
     ElMessage.warning('Пожалуйста, введите описание события.');
@@ -117,29 +159,49 @@ const dialogTitle = computed(() => `Активность за ${formatDate(selec
 .activity-cell {
   position: relative;
   padding: 4px;
-  cursor: pointer;
+  text-align: center;
 }
 
 .date-number {
-  text-align: right;
   font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .activity-dot {
-  width: 6px;
-  height: 6px;
-  background-color: #409eff;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
+  margin: 0 auto;
+  cursor: pointer;
 }
 
-.activity-count {
+.activity-dot-blue {
+  background-color: blue;
+}
+
+.activity-dot-yellow {
+  background-color: yellow;
+}
+
+.activity-dot-red {
+  background-color: red;
+}
+
+.add-activity-button {
   position: absolute;
-  bottom: 4px;
-  left: 4px;
+  top: 2px;
+  right: 2px;
   font-size: 12px;
-  color: #409eff;
+  padding: 0;
+}
+
+.add-activity-button .el-icon {
+  font-size: 12px;
+}
+
+/* Дополнительно: Предотвращение скачка интерфейса */
+.el-dialog {
+  max-height: 80vh;
 }
 </style>
