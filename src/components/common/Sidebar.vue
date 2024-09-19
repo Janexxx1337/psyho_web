@@ -47,7 +47,7 @@ const handleLogout = () => {
           <DocumentIcon class="input-icon" />
           <span>Сессии</span>
         </el-menu-item>
-        <el-menu-item index="/profile">
+        <el-menu-item index="/profile" class="profile">
           <UserIcon class="input-icon" />
           <span>Профиль</span>
         </el-menu-item>
@@ -199,6 +199,19 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+
+.profile {
+  position: fixed;
+  right: 0;
+  top:0;
+  background: #2d3a4b;
+  border-bottom-left-radius: 6px;
+}
+
+:deep(.el-menu-item-group__title) {
+  display: none;
 }
 
 /* Адаптивные стили */
