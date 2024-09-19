@@ -33,6 +33,11 @@ const isMobile = computed(() => window.innerWidth <= 768);
   overflow: hidden;
 }
 
+.el-button {
+  width: fit-content;
+}
+
+
 .main-container, .el-main {
   margin-left: 200px;
   transition: margin-left 0.3s;
