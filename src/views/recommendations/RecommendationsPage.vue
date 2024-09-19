@@ -77,14 +77,23 @@
 
         <!-- Действия -->
         <div class="actions">
+          <!-- Кнопка включения/отключения звука -->
+          <el-button @click="toggleMute">
+      <span class="material-symbols-outlined">
+        {{ isMuted ? 'volume_mute' : 'brand_awareness' }}
+      </span>
+            {{ isMuted ? 'Включить звук' : 'Отключить звук' }}
+          </el-button>
+
+          <!-- Остальные кнопки -->
           <el-button @click="printRecommendation">
-            <Printer class="input-icon" aria-label="Печать" /> Печать
+            <span class="material-symbols-outlined">print</span> Печать
           </el-button>
           <el-button @click="saveRecommendation">
-            <Download class="input-icon" aria-label="Сохранить" /> Сохранить
+            <span class="material-symbols-outlined">download</span> Сохранить
           </el-button>
           <el-button @click="goToHomePage">
-            <Back class="input-icon" aria-label="Вернуться на главную" /> Вернуться на главную
+            <span class="material-symbols-outlined">arrow_back</span> Вернуться на главную
           </el-button>
         </div>
       </el-card>
@@ -93,16 +102,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router';
 import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 // Импорт иконок из Element Plus
 import {
   User,
   Calendar,
-  Position,
   Printer,
   Back,
   ChatLineRound,
@@ -134,6 +142,9 @@ const conversationHistory = ref<Message[]>([]);
 // Ссылка на контейнер чата для автопрокрутки
 const chatContainer = ref<HTMLElement | null>(null);
 
+// Состояние звука
+const isMuted = ref(false);
+
 // Функция форматирования времени
 const formatTimestamp = (date: Date) => {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -147,6 +158,43 @@ onMounted(() => {
     timestamp: formatTimestamp(new Date()),
   });
   scrollToBottom();
+});
+
+// Остановка озвучки при уничтожении компонента
+onBeforeUnmount(() => {
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+  }
+});
+
+// Навигационный гард для предупреждения о покидании страницы
+onBeforeRouteLeave((to, from, next) => {
+  // Если сессия не сохранена, спрашиваем у пользователя
+  ElMessageBox.confirm(
+      'Вы хотите сохранить текущую сессию перед выходом?',
+      'Сохранить сессию',
+      {
+        confirmButtonText: 'Сохранить',
+        cancelButtonText: 'Выйти без сохранения',
+        showClose: true,
+        type: 'warning',
+      }
+  )
+      .then(() => {
+        // Если пользователь выбрал "Сохранить", вызываем функцию сохранения и переходим
+        saveRecommendation().then(() => {
+          next();
+        });
+      })
+      .catch((action) => {
+        if (action === 'cancel') {
+          // Если пользователь выбрал "Выйти без сохранения", переходим
+          next();
+        } else {
+          // Если пользователь закрыл диалог, отменяем переход
+          next(false);
+        }
+      });
 });
 
 const formattedRecommendations = computed(() => {
@@ -247,16 +295,40 @@ const saveRecommendation = async () => {
 
 // Функция озвучивания сообщения
 const voiceMessage = (message: Message) => {
+  if (isMuted.value) return;
+
   if ('speechSynthesis' in window) {
     if (speechSynthesis.speaking) {
       speechSynthesis.cancel();
     }
+
     const utterance = new SpeechSynthesisUtterance(message.content);
-    utterance.lang = 'ru-RU'; // Устанавливаем язык на русский
+    utterance.lang = 'ru-RU';
+
+    // Получаем список доступных голосов
+    const voices = speechSynthesis.getVoices();
+    // Находим желаемый голос
+    const selectedVoice = voices.find((voice) => voice.lang === 'ru-RU' && voice.name.includes('Premium'));
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
+
     speechSynthesis.speak(utterance);
   } else {
     console.error('Text-to-speech not supported.');
     ElMessage.error('Ваш браузер не поддерживает озвучивание сообщений.');
+  }
+};
+
+
+// Функция переключения состояния звука
+const toggleMute = () => {
+  isMuted.value = !isMuted.value;
+
+  // Останавливаем воспроизведение, если звук был отключен
+  if (isMuted.value && speechSynthesis.speaking) {
+    speechSynthesis.cancel();
   }
 };
 </script>
@@ -267,6 +339,10 @@ const voiceMessage = (message: Message) => {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+}
+
+.el-button+.el-button {
+  margin: 0;
 }
 
 .main {

@@ -29,9 +29,9 @@
         <el-button
             type="primary"
             native-type="submit"
-            icon="el-icon-edit"
             class="submit-button"
         >
+          <span class="material-symbols-outlined">edit</span>
           Добавить запись
         </el-button>
       </el-form>
@@ -46,9 +46,18 @@
           <!-- Фильтры для графика -->
           <div class="chart-filters">
             <el-button-group>
-              <el-button @click="filterChart('week')">Неделя</el-button>
-              <el-button @click="filterChart('month')">Месяц</el-button>
-              <el-button @click="filterChart('all')">Все</el-button>
+              <el-button @click="filterChart('week')">
+                <span class="material-symbols-outlined">weekend</span>
+                Неделя
+              </el-button>
+              <el-button @click="filterChart('month')">
+                <span class="material-symbols-outlined">calendar_month</span>
+                Месяц
+              </el-button>
+              <el-button @click="filterChart('all')">
+                <span class="material-symbols-outlined">calendar_view_day</span>
+                Все
+              </el-button>
             </el-button-group>
           </div>
           <!-- Используем VueECharts с правильным именем и пропом -->
@@ -144,9 +153,6 @@ import { useUserActivitiesStore } from '@/stores/userActivities';
 
 const router = useRouter();
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-
-
 
 // Проверка авторизации пользователя
 const currentUser = authService.getCurrentUser();
@@ -344,7 +350,6 @@ const sliderMarks = {
   height: 200px;
 }
 
-
 h2 {
   text-align: center;
   margin-bottom: 2rem;
@@ -451,11 +456,13 @@ v-chart {
   height: 400px;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.5s;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
   transform: translateY(20px);
 }
@@ -468,13 +475,48 @@ body {
 .comment-text {
   min-width: 200px;
 }
+
 :deep(.el-form-item__content) {
   min-width: auto;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.actions .el-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 calc(25% - 1rem);
+  border-radius: 8px; /* Закругленные углы для кнопок с текстом */
 }
 
 @media (max-width: 768px) {
   .form-header h3 {
     font-size: 1.2rem;
   }
+
+  .actions .el-button {
+    flex: 1 1 100%;
+  }
+
+  .message .content {
+    max-width: 80%;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24;
+  font-size: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 </style>

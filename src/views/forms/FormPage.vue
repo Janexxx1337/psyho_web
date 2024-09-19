@@ -8,7 +8,7 @@
         </p>
 
         <!-- Шаги формы -->
-        <el-steps :active="activeStep" finish-status="success" align-center>
+        <el-steps :active="formStore.activeStep" finish-status="success" align-center>
           <el-step title="Персональная информация"></el-step>
           <el-step title="Состояние"></el-step>
           <el-step title="Описание"></el-step>
@@ -16,19 +16,19 @@
 
         <!-- Форма -->
         <el-form
-            :model="form"
-            :rules="rules"
+            :model="formStore.form"
+            :rules="formStore.rules"
             ref="formRef"
             label-position="top"
             label-width="120px"
             class="step-form"
         >
           <!-- Шаг 1 -->
-          <div v-if="activeStep === 0">
+          <div v-if="formStore.activeStep === 0">
             <el-form-item label="Ваше имя" prop="name">
               <div class="input-with-icon">
                 <User class="input-icon" />
-                <el-input v-model="form.name" placeholder="Введите ваше имя"></el-input>
+                <el-input v-model="formStore.form.name" placeholder="Введите ваше имя"></el-input>
               </div>
             </el-form-item>
 
@@ -36,7 +36,7 @@
               <div class="input-with-icon">
                 <Calendar class="input-icon" />
                 <el-input-number
-                    v-model="form.age"
+                    v-model="formStore.form.age"
                     placeholder="Введите ваш возраст"
                     :min="0"
                     :max="120"
@@ -49,13 +49,13 @@
           </div>
 
           <!-- Шаг 2 -->
-          <div v-if="activeStep === 1">
+          <div v-if="formStore.activeStep === 1">
             <el-form-item label="Оцените своё состояние по шкале от 1 до 10" prop="conditionRating">
-              <el-rate v-model="form.conditionRating" :max="10" show-score></el-rate>
+              <el-rate v-model="formStore.form.conditionRating" :max="10" show-score></el-rate>
             </el-form-item>
 
             <el-form-item label="Выберите симптомы, которые вы испытываете" prop="symptoms">
-              <el-checkbox-group v-model="form.symptoms">
+              <el-checkbox-group v-model="formStore.form.symptoms">
                 <el-checkbox label="Бессонница"></el-checkbox>
                 <el-checkbox label="Потеря аппетита"></el-checkbox>
                 <el-checkbox label="Раздражительность"></el-checkbox>
@@ -67,10 +67,10 @@
           </div>
 
           <!-- Шаг 3 -->
-          <div v-if="activeStep === 2">
+          <div v-if="formStore.activeStep === 2">
             <el-form-item label="Опишите подробнее ваше состояние" prop="description">
               <el-input
-                  v-model="form.description"
+                  v-model="formStore.form.description"
                   type="textarea"
                   :rows="4"
                   placeholder="Опишите ваше состояние подробнее..."
@@ -80,22 +80,22 @@
 
           <!-- Кнопки управления -->
           <div class="form-actions">
-            <el-button v-if="activeStep > 0" @click="prevStep">Назад</el-button>
+            <el-button v-if="formStore.activeStep > 0" @click="prevStep">Назад</el-button>
             <el-button
-                v-if="activeStep < 2"
+                v-if="formStore.activeStep < 2"
                 type="primary"
-                @click="nextStep"
+                @click="handleNextStep"
             >
               Далее
             </el-button>
-              <el-button
-                  v-if="activeStep === 2"
-                  type="success"
-                  @click="handleSubmit"
-                  :loading="isLoading"
-              >
-                <Download /> Отправить
-              </el-button>
+            <el-button
+                v-if="formStore.activeStep === 2"
+                type="success"
+                @click="handleFormSubmit"
+                :loading="formStore.isLoading"
+            >
+              <Download /> Отправить
+            </el-button>
           </div>
         </el-form>
       </el-card>
@@ -105,127 +105,40 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-
-// Импорт иконок из Element Plus
 import { User, Calendar, Download } from '@element-plus/icons-vue';
-
+import { useFormStore } from '@/stores/formStore';
 import { useUserActivitiesStore } from '@/stores/userActivities';
+
+// Initialize the form store
+const formStore = useFormStore();
+
 
 const userActivitiesStore = useUserActivitiesStore();
 
-interface FormModel {
-  name: string;
-  age: number | null;
-  conditionRating: number;
-  symptoms: string[];
-  description: string;
-}
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const formRef = ref<InstanceType<typeof import('element-plus').Form>>();
 
-
-const router = useRouter();
-
-const form = ref<FormModel>({
-  name: '',
-  age: null,
-  conditionRating: 0,
-  symptoms: [],
-  description: '',
-});
-
-const formRef = ref();
-const isLoading = ref(false);
-const activeStep = ref(0);
-
-const rules = {
-  name: [{ required: true, message: 'Пожалуйста, введите ваше имя', trigger: 'blur' }],
-  age: [
-    { required: true, message: 'Пожалуйста, введите ваш возраст', trigger: 'blur' },
-    {
-      type: 'number',
-      min: 0,
-      message: 'Возраст должен быть положительным числом',
-      trigger: 'blur',
-    },
-  ],
-  conditionRating: [
-    { required: true, message: 'Пожалуйста, оцените ваше состояние', trigger: 'change' },
-  ],
-  symptoms: [
-    { required: true, message: 'Пожалуйста, выберите симптомы', trigger: 'change' },
-  ],
-  description: [
-    { required: true, message: 'Пожалуйста, опишите ваше состояние', trigger: 'blur' },
-  ],
-};
-
-const nextStep = () => {
+// Method to handle moving to the next step
+const handleNextStep = () => {
   formRef.value.validate((valid: boolean) => {
     if (valid) {
-      activeStep.value++;
+      formStore.nextStep();
     } else {
       console.log('Форма содержит ошибки.');
     }
   });
 };
 
+// Method to handle moving to the previous step
 const prevStep = () => {
-  activeStep.value--;
+  formStore.prevStep();
 };
 
-const handleSubmit = () => {
+// Method to handle form submission
+const handleFormSubmit = () => {
   formRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      isLoading.value = true;
-      try {
-        const sessionId = Date.now().toString();
-
-        const formData = new FormData();
-        formData.append('name', form.value.name);
-        formData.append('age', String(form.value.age));
-        formData.append('condition', String(form.value.conditionRating));
-        formData.append('symptoms', form.value.symptoms.join(', '));
-        formData.append('description', form.value.description);
-        formData.append('session_id', sessionId);
-
-        const { data } = await axios.post(
-            `${API_BASE_URL}/get_recommendations`,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-              },
-            }
-        );
-
-        await router.push({
-          name: 'RecommendationsPage',
-          params: {
-            recommendations: data.recommendations,
-            name: form.value.name,
-            age: form.value.age,
-            condition: form.value.conditionRating,
-            symptoms: form.value.symptoms,
-            description: form.value.description,
-            session_id: sessionId,
-          },
-        });
-
-        const activity = 'Был посещен сеанс с доктором ИИ';
-        const date = new Date();
-
-        console.log('Добавление активности в store:', { date, activity });
-        // Используем store для добавления активности
-        userActivitiesStore.addActivity(date, activity);
-
-      } catch (error) {
-        console.error('Ошибка при отправке формы:', error);
-      } finally {
-        isLoading.value = false;
-      }
+      await formStore.handleSubmit();
     } else {
       console.log('Форма содержит ошибки.');
     }
