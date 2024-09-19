@@ -116,7 +116,7 @@ interface Message {
   timestamp: string;
 }
 
-const API_BASE_URL = 'http://localhost:8000'; // Используйте переменные окружения в реальном проекте
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const route = useRoute();
 const router = useRouter();

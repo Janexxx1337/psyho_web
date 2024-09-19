@@ -7,10 +7,13 @@ import {ChatLineRound, User} from '@element-plus/icons-vue';
 const route = useRoute();
 const sessionDetails = ref(null);
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const fetchSessionDetails = async () => {
   try {
     const response = await axios.get(
-        `http://localhost:8000/get_session_details?session_id=${route.params.session_id}`
+        `${API_BASE_URL}/get_session_details?session_id=${route.params.session_id}`
     );
     sessionDetails.value = response.data.session;
   } catch (error) {

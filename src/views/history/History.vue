@@ -48,6 +48,9 @@ interface Session {
   fullDescription: any[];
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const userRequests = ref<Session[]>([]);
 const router = useRouter();
 const searchQuery = ref('');
@@ -60,7 +63,7 @@ const stripHtmlTags = (html: string) => {
 
 const fetchSessions = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/get_sessions');
+    const response = await axios.get(`${API_BASE_URL}/get_sessions`);
     userRequests.value = response.data.sessions.map((session: any) => {
       const assistantMessage = session.history.find(
           (message: any) => message.role === 'assistant'

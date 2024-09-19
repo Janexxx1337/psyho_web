@@ -123,6 +123,9 @@ interface FormModel {
   description: string;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const router = useRouter();
 
 const form = ref<FormModel>({
@@ -189,7 +192,7 @@ const handleSubmit = () => {
         formData.append('session_id', sessionId);
 
         const { data } = await axios.post(
-            'http://localhost:8000/get_recommendations',
+            `${API_BASE_URL}/get_recommendations`,
             formData,
             {
               headers: {

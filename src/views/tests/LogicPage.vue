@@ -70,13 +70,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { logicTest } from '@/state/tests/logicTest';
 
-// Импортируем новый компонент
+// Импортируем компонент прогресса
 import ProgressVessel from '@/components/common/ProgressVessel.vue';
+
+// Импортируем стор пользовательских активностей
+import { useUserActivitiesStore } from '@/stores/userActivities';
 
 const router = useRouter();
 
@@ -85,6 +88,9 @@ const currentQuestionIndex = ref(0);
 const userAnswer = ref(null);
 const answers = ref([]);
 const isSubmitting = ref(false);
+
+// Инициализируем стор активностей
+const userActivitiesStore = useUserActivitiesStore();
 
 const currentQuestion = computed(() => {
   return test.value.questions[currentQuestionIndex.value];
@@ -103,21 +109,15 @@ const totalQuestions = computed(() => {
 });
 
 const correctAnswers = computed(() => {
-  return answers.value.filter(
-      (a) => a.selected === a.correct
-  ).length;
+  return answers.value.filter((a) => a.selected === a.correct).length;
 });
 
 const incorrectAnswers = computed(() => {
-  return answers.value.filter(
-      (a) => a.selected !== a.correct
-  );
+  return answers.value.filter((a) => a.selected !== a.correct);
 });
 
-
-
 const progressPercentage = computed(() => {
-  return Math.round(((currentQuestionIndex.value) / totalQuestions.value) * 100);
+  return Math.round((currentQuestionIndex.value / totalQuestions.value) * 100);
 });
 
 const nickname = computed(() => {
@@ -145,7 +145,6 @@ const nickname = computed(() => {
   }
 });
 
-
 const nextQuestion = async () => {
   if (!userAnswer.value) return;
 
@@ -163,6 +162,14 @@ const nextQuestion = async () => {
   currentQuestionIndex.value++;
 
   isSubmitting.value = false;
+
+  // Проверяем, завершен ли тест
+  if (isTestCompleted.value) {
+    // Добавляем активность в календарь
+    const date = new Date();
+    const activity = `"${test.value.title}" пройден. Правильных ответов: ${correctAnswers.value} из ${totalQuestions.value}`;
+    userActivitiesStore.addActivity(date, activity);
+  }
 };
 
 const retakeTest = () => {

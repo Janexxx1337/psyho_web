@@ -114,7 +114,6 @@ import { ElMessage } from 'element-plus';
 import { authService } from '@/services/authService';
 import { useRouter } from 'vue-router';
 
-
 // Импортируем компонент MoodIcon
 import MoodIcon from '@/views/mood/MoodIcon.vue';
 
@@ -140,8 +139,14 @@ use([
   LegendComponent,
 ]);
 
+// **Импортируем userActivitiesStore**
+import { useUserActivitiesStore } from '@/stores/userActivities';
+
 const router = useRouter();
-const API_BASE_URL = 'http://localhost:8000'; // Замените на ваш базовый URL API
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
+
 
 // Проверка авторизации пользователя
 const currentUser = authService.getCurrentUser();
@@ -166,6 +171,9 @@ const paginatedEntries = computed(() => {
 
 const reversedMoodEntries = computed(() => [...moodEntries.value].reverse());
 
+// **Инициализируем userActivitiesStore**
+const userActivitiesStore = useUserActivitiesStore();
+
 const saveMoodEntry = async () => {
   if (!currentUser) return;
   if (moodRating.value === 0) {
@@ -185,6 +193,13 @@ const saveMoodEntry = async () => {
     moodRating.value = 5;
     moodComment.value = '';
     ElMessage.success('Запись настроения сохранена.');
+
+    // **Добавляем запись активности в календарь**
+    const date = new Date();
+    const activityComment = entry.comment ? entry.comment : 'Без комментария';
+    const activity = `Запись в дневник настроений: "${activityComment}"`;
+    userActivitiesStore.addActivity(date, activity);
+
     await loadMoodAnalysis();
     updateChart();
   } catch (error) {
