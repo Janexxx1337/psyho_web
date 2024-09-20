@@ -3,7 +3,6 @@
     <el-container>
       <!-- Сайдбар отображается, если пользователь авторизован и не на мобильном устройстве -->
       <Sidebar v-if="isAuthenticated && !isMobile" />
-      <button class="profile">Profile</button>
       <el-main :style="{ marginLeft: isAuthenticated && !isMobile ? '200px' : '0' }">
         <RouterView />
       </el-main>
@@ -36,6 +35,7 @@ const isMobile = computed(() => window.innerWidth <= 768);
 .el-button {
   width: fit-content;
 }
+
 
 .main-container, .el-main {
   margin-left: 200px;
