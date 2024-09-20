@@ -1,3 +1,4 @@
+<!-- src/views/mood/MoodForm.vue -->
 <template>
   <el-card class="entry-card">
     <div class="form-header">
@@ -15,18 +16,22 @@
         ></el-slider>
       </el-form-item>
       <el-form-item label="Комментарий">
-        <el-input
-            class="comment-text"
-            type="textarea"
+        <UiInput
             v-model="comment"
+            type="textarea"
             placeholder="Опишите ваше настроение"
             :rows="3"
-        ></el-input>
+            className="comment-text"
+        />
       </el-form-item>
-      <el-button type="primary" native-type="submit" class="submit-button">
-        <span class="material-symbols-outlined">edit</span>
+      <UiButton
+          type="primary"
+          native-type="submit"
+          className="submit-button"
+          icon="edit"
+      >
         Добавить запись
-      </el-button>
+      </UiButton>
     </el-form>
   </el-card>
 </template>
@@ -34,6 +39,8 @@
 <script setup lang="ts">
 import { defineEmits, ref } from 'vue';
 import MoodIcon from '@/views/mood/icons/MoodIcon.vue';
+import UiButton from '@/components/common/UiButton.vue';
+import UiInput from '@/components/common/UiInput.vue';
 
 const emit = defineEmits(['submit']);
 
@@ -81,4 +88,11 @@ const handleSubmit = () => {
   margin-bottom: 1rem;
 }
 
+.submit-button {
+  align-self: flex-end;
+}
+
+.comment-text {
+  width: 100%;
+}
 </style>
