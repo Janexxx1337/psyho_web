@@ -277,7 +277,7 @@ h2 .material-symbols-outlined {
 }
 
 /* Дополнительные стили для адаптивности и улучшения внешнего вида */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .form-actions {
     flex-direction: column;
     gap: 10px;
@@ -286,6 +286,15 @@ h2 .material-symbols-outlined {
   .el-button {
     width: 100%;
     justify-content: center;
+  }
+
+  .main {
+    justify-content: flex-start;
+    min-height: auto;
+    overflow: hidden;
+  }
+  :deep(html) {
+    overflow: hidden;
   }
 }
 </style>
