@@ -11,6 +11,8 @@ import UserProfile from '../views/user/UserProfile.vue';
 import MoodDiary from "@/views/mood/MoodDiary.vue";
 import LogicPage from '@/views/tests/LogicPage.vue';
 import { authService } from '@/services/authService';
+import SimonSays from "@/views/games/SimonSays.vue";
+import PositiveThoughts from "@/views/games/PositiveThoughts.vue";
 
 const routes = [
     {
@@ -23,6 +25,18 @@ const routes = [
         path: '/Logic',
         name: 'LogicPage',
         component: LogicPage,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/simon-says',
+        name: 'SimonSays',
+        component: SimonSays,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/positive-thoughts',
+        name: 'PositiveThoughts',
+        component: PositiveThoughts,
         meta: { requiresAuth: true },
     },
     {

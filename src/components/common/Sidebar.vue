@@ -9,6 +9,9 @@ import {
   SwitchButton,
   MagicStick,
   SwitchFilled,
+  Lightning,
+  Aim,
+  SmileFilled,
 } from '@element-plus/icons-vue';
 import { authService } from '@/services/authService';
 
@@ -43,6 +46,23 @@ const handleLogout = () => {
           <SwitchFilled class="input-icon" />
           <span>Тест: Логика</span>
         </el-menu-item>
+
+        <!-- Подменю "Игры" -->
+        <el-sub-menu index="games">
+          <template #title>
+            <Lightning class="input-icon" />
+            <span>Игры</span>
+          </template>
+          <el-menu-item index="/simon-says">
+            <Aim class="menu-icon" />
+            <span>Симон говорит</span>
+          </el-menu-item>
+          <el-menu-item index="/positive-thoughts">
+            <SmileFilled class="menu-icon" />
+            <span>Позитивные мысли</span>
+          </el-menu-item>
+        </el-sub-menu>
+
         <el-menu-item index="/history">
           <DocumentIcon class="input-icon" />
           <span>Сессии</span>
@@ -66,7 +86,6 @@ const handleLogout = () => {
       </el-menu>
     </el-aside>
 
-
     <!-- Нижнее меню для мобильных устройств -->
     <nav class="bottom-nav">
       <el-row type="flex" justify="space-around" align="middle">
@@ -78,6 +97,25 @@ const handleLogout = () => {
           <SwitchFilled class="input-icon" />
           <span>Логика</span>
         </button>
+        <!-- Кнопка "Игры" с выпадающим меню -->
+        <el-dropdown trigger="click" placement="top-start">
+          <button class="dropdown-button" :class="{ active: route.path.startsWith('/simon-says') || route.path.startsWith('/positive-thoughts') }">
+            <Lightning class="input-icon" />
+            <span>Игры</span>
+          </button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click.native="router.push('/simon-says')">
+                <Aim class="menu-icon" />
+                <span>Симон говорит</span>
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="router.push('/positive-thoughts')">
+                <SmileFilled class="menu-icon" />
+                <span>Позитивные мысли</span>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <button @click="router.push('/history')" :class="{ active: route.path === '/history' }">
           <DocumentIcon class="input-icon" />
           <span>Сессии</span>
@@ -104,7 +142,7 @@ const handleLogout = () => {
   position: fixed;
   left: 0;
   top: 0;
-  width: 200px;
+  width: 300px;
 }
 
 svg {
@@ -133,12 +171,18 @@ svg {
   background-color: #1d2733;
 }
 
-.el-menu-item span {
+.el-menu-item span, .el-sub-menu span {
   margin-left: 8px;
 }
 
 .input-icon {
   font-size: 24px;
+}
+
+.menu-icon {
+  font-size: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 .logout-section {
@@ -193,19 +237,62 @@ svg {
   color: #409EFF;
 }
 
-
 button {
   border-radius: 6px;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.dropdown-button {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdown-button .input-icon {
+  font-size: 24px;
+}
+
+.el-dropdown-menu {
+  background-color: #2d3a4b;
+  border-color: #1d2733;
+}
+
+.el-dropdown-menu__item {
+  color: #bfcbd9;
+  display: flex;
+  align-items: center;
+}
+
+.el-dropdown-menu__item:hover {
+  background-color: #1d2733;
+  color: #409EFF;
+}
+
+.el-dropdown-menu__item .menu-icon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.el-dropdown-menu__item span {
+  display: inline-block;
+}
 
 .profile {
   position: fixed;
   right: 0;
-  top:0;
+  top: 0;
   background: #2d3a4b;
   border-bottom-left-radius: 6px;
 }
