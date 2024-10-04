@@ -16,6 +16,6 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 0,
     'prettier/prettier': 'error',
-    'no-unused-vars': ['error', { 'vars': 'all', 'args': 'none', 'ignoreRestSiblings': false }],
+    'no-unused-vars': ['error', { 'vars': 'all', 'args': 'none', 'ignoreRestSiblings': true }],
   },
 };
