@@ -61,7 +61,7 @@
     },
     className: {
       type: String,
-      default: '', // Дополнительные классы для стилизации
+      default: '', /ывыв
     },
   });
 
