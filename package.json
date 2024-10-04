@@ -40,15 +40,6 @@
     "*.{js,ts,vue}": [
       "eslint --fix",
       "prettier --write"
-    ],
-    "*.css": [
-      "stylelint --fix"
-    ],
-    "*.json": [
-      "prettier --write"
-    ],
-    "*.md": [
-      "prettier --write"
     ]
   }
 }
