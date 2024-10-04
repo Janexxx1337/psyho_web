@@ -15,9 +15,8 @@
   </el-button-group>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
-/* Добавьте стили для ChartFilters */
+  /* Добавьте стили для ChartFilters */
 </style>

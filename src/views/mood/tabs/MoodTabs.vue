@@ -15,30 +15,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import MoodChart from '../chart/MoodChart.vue';
-import MoodHistory from '../history/MoodHistory.vue';
-import MoodAnalysis from '../analysis/MoodAnalysis.vue';
+  import { ref } from 'vue';
+  import MoodChart from '../chart/MoodChart.vue';
+  import MoodHistory from '../history/MoodHistory.vue';
+  import MoodAnalysis from '../analysis/MoodAnalysis.vue';
 
-const props = defineProps({
-  entries: {
-    type: Array,
-    required: true,
-  },
-  analysis: {
-    type: String,
-    required: true,
-  },
-  entriesPerPage: {
-    type: Number,
-    default: 5,
-  },
-});
-const activeTab = ref('dynamics');
+  const props = defineProps({
+    entries: {
+      type: Array,
+      required: true,
+    },
+    analysis: {
+      type: String,
+      required: true,
+    },
+    entriesPerPage: {
+      type: Number,
+      default: 5,
+    },
+  });
+  const activeTab = ref('dynamics');
 </script>
 
 <style scoped>
-.mood-tabs {
-  margin-top: 10px;
-}
+  .mood-tabs {
+    margin-top: 10px;
+  }
 </style>

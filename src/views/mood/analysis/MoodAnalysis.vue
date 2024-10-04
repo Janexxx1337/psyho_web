@@ -8,14 +8,14 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-  analysis: {
-    type: String,
-    required: true,
-  },
-});
+  const props = defineProps({
+    analysis: {
+      type: String,
+      required: true,
+    },
+  });
 </script>
 
 <style scoped>
-/* Добавьте стили для MoodAnalysis */
+  /* Добавьте стили для MoodAnalysis */
 </style>
