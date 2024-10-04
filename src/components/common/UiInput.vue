@@ -15,7 +15,7 @@
       :autosize="isTextarea ? { minRows: rows, maxRows: rows } : false"
   >
     <template v-if="icon" #prefix>
-   <span class="material-symbols-outlined ui-input__icon">
+     <span class="material-symbols-outlined ui-input__icon">
         {{ icon }}
       </span>
     </template>
