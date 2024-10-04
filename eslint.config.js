@@ -1,4 +1,6 @@
-module.exports = {
+import { defineConfig } from 'eslint-define-config';
+
+export default defineConfig({
   env: {
     browser: true,
     es2021: true,
@@ -18,4 +20,4 @@ module.exports = {
     'prettier/prettier': 'error',
     'no-unused-vars': ['error', { 'vars': 'all', 'args': 'none' }],
   },
-};
+});
