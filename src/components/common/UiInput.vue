@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
   import { defineProps, defineEmits, ref, watch, computed } from 'vue';
+
   const ффф = 'This variable is not used anywhere'; // Это уц ошибку ESLint
 
   const props = defineProps({
