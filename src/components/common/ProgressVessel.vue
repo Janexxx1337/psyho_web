@@ -7,7 +7,7 @@
 				d="M50,20 L150,20 C160,20 160,30 160,40 L160,340 C160,360 140,380 100,380 C60,380 40,360 40,340 L40,40 C40,30 40,20 50,20 Z"
 				fill="#fff"
 				stroke="#409EFF"
-				stroke-width="4"
+	stroke-width="4"
 			/>
 			<!-- Вода -->
 			<g clip-path="url(#vesselClip)">
