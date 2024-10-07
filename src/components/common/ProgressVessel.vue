@@ -59,6 +59,7 @@ const { percentage } = defineProps({
   },
 });
 
+
 const vesselSvg = ref(null);
 
 // Уровень воды в зависимости от процента

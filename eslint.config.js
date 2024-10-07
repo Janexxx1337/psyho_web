@@ -1,23 +1,26 @@
-import { defineConfig } from 'eslint-define-config';
+import prettierPlugin from 'eslint-plugin-prettier';
+import vuePlugin from 'eslint-plugin-vue';
 
-export default defineConfig({
-	env: {
-		browser: true,
-		es2021: true,
-		node: true,
+export default [
+	{
+		files: ['src/**/*.vue', 'src/**/*.js', 'src/**/*.ts'],
+		languageOptions: {
+			ecmaVersion: 2021,
+			sourceType: 'module',
+		},
+		plugins: {
+			vue: vuePlugin,
+			prettier: prettierPlugin,
+		},
+		rules: {
+			// Prettier
+			'prettier/prettier': 'error',
+
+			// Vue-specific rules
+			'vue/multi-word-component-names': 'off',
+
+			// JS/TS rules
+			'no-unused-vars': ['error', { vars: 'all', args: 'none' }],
+		},
 	},
-	extends: [
-		'plugin:vue/vue3-recommended',
-		'eslint:recommended',
-		'plugin:prettier/recommended',
-	],
-	parserOptions: {
-		ecmaVersion: 12,
-		sourceType: 'module',
-	},
-	rules: {
-		'vue/multi-word-component-names': 0,
-		'prettier/prettier': 'error',
-		'no-unused-vars': ['error', { vars: 'all', args: 'none' }],
-	},
-});
+];
