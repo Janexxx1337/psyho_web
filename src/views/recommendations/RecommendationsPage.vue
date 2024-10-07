@@ -118,7 +118,7 @@
 	import axios from 'axios';
 	import { ElMessage, ElAlert } from 'element-plus';
 	import { useFormStore } from '@/stores/formStore';
-
+	const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 	// Импорт иконок из Element Plus
 	import {
 		User,
@@ -250,15 +250,36 @@
 		try {
 			if (!recommendationsData.value)
 				throw new Error('Нет данных для сохранения.');
-			await axios.post(`${API_BASE_URL}/save_session`, {
+
+			const data = {
 				session_id: recommendationsData.value.session_id,
 				name: recommendationsData.value.name,
 				age: recommendationsData.value.age,
+				condition: recommendationsData.value.condition,
+				description: recommendationsData.value.description,
 				date: currentDate.value,
+			};
+
+			console.log('Отправляем данные для сохранения сессии:', data);
+
+			const response = await axios.post(`${API_BASE_URL}/save_session`, data, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			});
-			ElMessage.success('Сессия успешно сохранена.');
+
+			console.log('Ответ от сервера:', response);
+
+			if (response.status === 200) {
+				ElMessage.success('Сессия успешно сохранена.');
+			} else {
+				throw new Error(
+					'Не удалось сохранить сессию. Неправильный ответ от сервера.'
+				);
+			}
 		} catch (error) {
-			ElMessage.error('Не удалось сохранить сессию.');
+			console.error('Ошибка при сохранении сессии:', error);
+			ElMessage.error(`Не удалось сохранить сессию. Ошибка: ${error.message}`);
 		}
 	};
 
