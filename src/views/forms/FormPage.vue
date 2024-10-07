@@ -1,327 +1,329 @@
 <template>
-  <el-container class="app-container">
-    <el-main class="main">
-      <el-card class="form-card" shadow="hover">
-        <h2>
-          <span class="material-symbols-outlined">psychology</span>
-          Психологическая поддержка
-        </h2>
-        <p class="form-description">
-          Пожалуйста, заполните эту форму, чтобы мы могли предоставить вам
-          персональные рекомендации и поддержку.
-        </p>
+	<el-container class="app-container">
+		<el-main class="main">
+			<el-card class="form-card" shadow="hover">
+				<h2>
+					<span class="material-symbols-outlined">psychology</span>
+					Психологическая поддержка
+				</h2>
+				<p class="form-description">
+					Пожалуйста, заполните эту форму, чтобы мы могли предоставить вам
+					персональные рекомендации и поддержку.
+				</p>
 
-        <!-- Шаги формы -->
-        <el-steps
-          :active="formStore.activeStep"
-          finish-status="success"
-          align-center
-        >
-          <el-step title="Информация"></el-step>
-          <el-step title="Состояние"></el-step>
-          <el-step title="Описание"></el-step>
-        </el-steps>
+				<!-- Шаги формы -->
+				<el-steps
+					:active="formStore.activeStep"
+					finish-status="success"
+					align-center
+				>
+					<el-step title="Информация"></el-step>
+					<el-step title="Состояние"></el-step>
+					<el-step title="Описание"></el-step>
+				</el-steps>
 
-        <!-- Форма -->
-        <el-form
-          :model="formStore.form"
-          :rules="formStore.rules"
-          ref="formRef"
-          label-position="top"
-          label-width="120px"
-          class="step-form"
-        >
-          <!-- Шаг 1: Персональная информация -->
-          <div v-if="formStore.activeStep === 0">
-            <el-form-item label="Ваше имя" prop="name">
-              <div class="input-with-icon">
-                <span class="material-symbols-outlined input-icon">person</span>
-                <el-input
-                  v-model="formStore.form.name"
-                  placeholder="Введите ваше имя"
-                ></el-input>
-              </div>
-            </el-form-item>
+				<!-- Форма -->
+				<el-form
+					:model="formStore.form"
+					:rules="formStore.rules"
+					ref="formRef"
+					label-position="top"
+					label-width="120px"
+					class="step-form"
+				>
+					<!-- Шаг 1: Персональная информация -->
+					<div v-if="formStore.activeStep === 0">
+						<el-form-item label="Ваше имя" prop="name">
+							<div class="input-with-icon">
+								<span class="material-symbols-outlined input-icon">person</span>
+								<el-input
+									v-model="formStore.form.name"
+									placeholder="Введите ваше имя"
+								></el-input>
+							</div>
+						</el-form-item>
 
-            <el-form-item label="Ваш возраст" prop="age">
-              <div class="input-with-icon">
-                <span class="material-symbols-outlined input-icon"
-                  >calendar_today</span
-                >
-                <el-input-number
-                  v-model="formStore.form.age"
-                  placeholder="Введите ваш возраст"
-                  :min="0"
-                  :max="120"
-                  controls-position="right"
-                  :step="1"
-                  class="age-input-number"
-                ></el-input-number>
-              </div>
-            </el-form-item>
-          </div>
+						<el-form-item label="Ваш возраст" prop="age">
+							<div class="input-with-icon">
+								<span class="material-symbols-outlined input-icon"
+									>calendar_today</span
+								>
+								<el-input-number
+									v-model="formStore.form.age"
+									placeholder="Введите ваш возраст"
+									:min="0"
+									:max="120"
+									controls-position="right"
+									:step="1"
+									class="age-input-number"
+								></el-input-number>
+							</div>
+						</el-form-item>
+					</div>
 
-          <!-- Шаг 2: Состояние -->
-          <div v-if="formStore.activeStep === 1">
-            <el-form-item
-              label="Оцените своё состояние по шкале от 1 до 10"
-              prop="conditionRating"
-            >
-              <div class="rating-with-icon">
-                <span class="material-symbols-outlined rating-icon">mood</span>
-                <el-rate
-                  v-model="formStore.form.conditionRating"
-                  :max="10"
-                  show-score
-                ></el-rate>
-              </div>
-            </el-form-item>
+					<!-- Шаг 2: Состояние -->
+					<div v-if="formStore.activeStep === 1">
+						<el-form-item
+							label="Оцените своё состояние по шкале от 1 до 10"
+							prop="conditionRating"
+						>
+							<div class="rating-with-icon">
+								<span class="material-symbols-outlined rating-icon">mood</span>
+								<el-rate
+									v-model="formStore.form.conditionRating"
+									:max="10"
+									show-score
+								></el-rate>
+							</div>
+						</el-form-item>
 
-            <el-form-item
-              label="Выберите симптомы, которые вы испытываете"
-              prop="symptoms"
-            >
-              <div class="checkbox-group-with-icon">
-                <span class="material-symbols-outlined checkbox-icon"
-                  >health_and_safety</span
-                >
-                <el-checkbox-group v-model="formStore.form.symptoms">
-                  <el-checkbox label="Бессонница"></el-checkbox>
-                  <el-checkbox label="Потеря аппетита"></el-checkbox>
-                  <el-checkbox label="Раздражительность"></el-checkbox>
-                  <el-checkbox label="Тревожность"></el-checkbox>
-                  <el-checkbox label="Панические атаки"></el-checkbox>
-                  <!-- Добавьте другие варианты -->
-                </el-checkbox-group>
-              </div>
-            </el-form-item>
-          </div>
+						<el-form-item
+							label="Выберите симптомы, которые вы испытываете"
+							prop="symptoms"
+						>
+							<div class="checkbox-group-with-icon">
+								<span class="material-symbols-outlined checkbox-icon"
+									>health_and_safety</span
+								>
+								<el-checkbox-group v-model="formStore.form.symptoms">
+									<el-checkbox label="Бессонница"></el-checkbox>
+									<el-checkbox label="Потеря аппетита"></el-checkbox>
+									<el-checkbox label="Раздражительность"></el-checkbox>
+									<el-checkbox label="Тревожность"></el-checkbox>
+									<el-checkbox label="Панические атаки"></el-checkbox>
+									<!-- Добавьте другие варианты -->
+								</el-checkbox-group>
+							</div>
+						</el-form-item>
+					</div>
 
-          <!-- Шаг 3: Описание -->
-          <div v-if="formStore.activeStep === 2">
-            <el-form-item
-              label="Опишите подробнее ваше состояние"
-              prop="description"
-            >
-              <div class="textarea-with-icon">
-                <span class="material-symbols-outlined textarea-icon"
-                  >description</span
-                >
-                <el-input
-                  v-model="formStore.form.description"
-                  type="textarea"
-                  :rows="4"
-                  placeholder="Опишите ваше состояние подробнее..."
-                ></el-input>
-              </div>
-            </el-form-item>
-          </div>
+					<!-- Шаг 3: Описание -->
+					<div v-if="formStore.activeStep === 2">
+						<el-form-item
+							label="Опишите подробнее ваше состояние"
+							prop="description"
+						>
+							<div class="textarea-with-icon">
+								<span class="material-symbols-outlined textarea-icon"
+									>description</span
+								>
+								<el-input
+									v-model="formStore.form.description"
+									type="textarea"
+									:rows="4"
+									placeholder="Опишите ваше состояние подробнее..."
+								></el-input>
+							</div>
+						</el-form-item>
+					</div>
 
-          <!-- Кнопки управления -->
-          <div class="form-actions">
-            <el-button v-if="formStore.activeStep > 0" @click="prevStep">
-              <span class="material-symbols-outlined">arrow_back</span> Назад
-            </el-button>
-            <el-button
-              v-if="formStore.activeStep < 2"
-              type="primary"
-              @click="handleNextStep"
-            >
-              Далее <span class="material-symbols-outlined">arrow_forward</span>
-            </el-button>
-            <el-button
-              v-if="formStore.activeStep === 2"
-              type="success"
-              @click="handleFormSubmit"
-              :loading="formStore.isLoading"
-            >
-              <span class="material-symbols-outlined">send</span> Отправить
-            </el-button>
-          </div>
-        </el-form>
-      </el-card>
-    </el-main>
-  </el-container>
+					<!-- Кнопки управления -->
+					<div class="form-actions">
+						<el-button v-if="formStore.activeStep > 0" @click="prevStep">
+							<span class="material-symbols-outlined">arrow_back</span> Назад
+						</el-button>
+						<el-button
+							v-if="formStore.activeStep < 2"
+							type="primary"
+							@click="handleNextStep"
+						>
+							Далее <span class="material-symbols-outlined">arrow_forward</span>
+						</el-button>
+						<el-button
+							v-if="formStore.activeStep === 2"
+							type="success"
+							@click="handleFormSubmit"
+							:loading="formStore.isLoading"
+						>
+							<span class="material-symbols-outlined">send</span> Отправить
+						</el-button>
+					</div>
+				</el-form>
+			</el-card>
+		</el-main>
+	</el-container>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useFormStore } from '@/stores/formStore';
-  import { useUserActivitiesStore } from '@/stores/userActivities';
+	import { ref } from 'vue';
+	import { useFormStore } from '@/stores/formStore';
+	import { useUserActivitiesStore } from '@/stores/userActivities';
+	import { useRouter } from 'vue-router';
+	// Инициализация хранилища формы
+	const router = useRouter();
+	const formStore = useFormStore();
+	const userActivitiesStore = useUserActivitiesStore();
+	const formRef = ref<InstanceType<typeof import('element-plus').Form>>();
 
-  // Инициализация хранилища формы
-  const formStore = useFormStore();
-  const userActivitiesStore = useUserActivitiesStore();
-  const formRef = ref<InstanceType<typeof import('element-plus').Form>>();
+	// Обработчики шагов
+	const handleNextStep = () => {
+		formRef.value.validate((valid: boolean) => {
+			if (valid) {
+				formStore.nextStep();
+			} else {
+				console.log('Форма содержит ошибки.');
+			}
+		});
+	};
 
-  // Обработчики шагов
-  const handleNextStep = () => {
-    formRef.value.validate((valid: boolean) => {
-      if (valid) {
-        formStore.nextStep();
-      } else {
-        console.log('Форма содержит ошибки.');
-      }
-    });
-  };
+	const prevStep = () => {
+		formStore.prevStep();
+	};
 
-  const prevStep = () => {
-    formStore.prevStep();
-  };
-
-  const handleFormSubmit = () => {
-    formRef.value.validate(async (valid: boolean) => {
-      if (valid) {
-        await formStore.handleSubmit();
-      } else {
-        console.log('Форма содержит ошибки.');
-      }
-    });
-  };
+	const handleFormSubmit = () => {
+		formRef.value.validate(async (valid: boolean) => {
+			if (valid) {
+				await formStore.handleSubmit();
+				router.push({ name: 'RecommendationsPage' });
+			} else {
+				console.log('Форма содержит ошибки.');
+			}
+		});
+	};
 </script>
 
 <style scoped>
-  .app-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
+	.app-container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
 
-  .main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: calc(100vh - 80px);
-    background-color: #f9fafc;
-  }
+	.main {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		min-height: calc(100vh - 80px);
+		background-color: #f9fafc;
+	}
 
-  .form-card {
-    width: 100%;
-    max-width: 600px;
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
+	.form-card {
+		width: 100%;
+		max-width: 600px;
+		padding: 2rem;
+		border-radius: 10px;
+		background-color: #ffffff;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+	}
 
-  h2 {
-    margin-bottom: 0.5rem;
-    text-align: center;
-    color: #333;
-    font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+	h2 {
+		margin-bottom: 0.5rem;
+		text-align: center;
+		color: #333;
+		font-size: 1.8rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-  h2 .material-symbols-outlined {
-    margin-right: 8px;
-    font-size: 2rem;
-    color: #409eff;
-  }
+	h2 .material-symbols-outlined {
+		margin-right: 8px;
+		font-size: 2rem;
+		color: #409eff;
+	}
 
-  .form-description {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #666;
-  }
+	.form-description {
+		text-align: center;
+		margin-bottom: 1.5rem;
+		color: #666;
+	}
 
-  .el-steps {
-    margin-bottom: 2rem;
-  }
+	.el-steps {
+		margin-bottom: 2rem;
+	}
 
-  .el-step__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+	.el-step__icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-  .step-icon {
-    font-size: 24px;
-    color: #409eff;
-  }
+	.step-icon {
+		font-size: 24px;
+		color: #409eff;
+	}
 
-  .step-form {
-    margin-top: 2rem;
-  }
+	.step-form {
+		margin-top: 2rem;
+	}
 
-  .input-with-icon,
-  .rating-with-icon,
-  .checkbox-group-with-icon,
-  .textarea-with-icon {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
+	.input-with-icon,
+	.rating-with-icon,
+	.checkbox-group-with-icon,
+	.textarea-with-icon {
+		display: flex;
+		align-items: center;
+		width: 100%;
+	}
 
-  .input-icon,
-  .rating-icon,
-  .checkbox-icon,
-  .textarea-icon {
-    font-variation-settings:
-      'FILL' 0,
-      'wght' 400,
-      'GRAD' 0,
-      'opsz' 24;
-    margin-right: 10px;
-    color: #409eff;
-    font-size: 1.5rem;
-  }
+	.input-icon,
+	.rating-icon,
+	.checkbox-icon,
+	.textarea-icon {
+		font-variation-settings:
+			'FILL' 0,
+			'wght' 400,
+			'GRAD' 0,
+			'opsz' 24;
+		margin-right: 10px;
+		color: #409eff;
+		font-size: 1.5rem;
+	}
 
-  .input-with-icon .el-input,
-  .input-with-icon .el-input-number,
-  .textarea-with-icon .el-input {
-    flex: 1;
-  }
+	.input-with-icon .el-input,
+	.input-with-icon .el-input-number,
+	.textarea-with-icon .el-input {
+		flex: 1;
+	}
 
-  .age-input-number {
-    width: 100%;
-  }
+	.age-input-number {
+		width: 100%;
+	}
 
-  .rating-with-icon .el-rate {
-    flex: 1;
-  }
+	.rating-with-icon .el-rate {
+		flex: 1;
+	}
 
-  .checkbox-group-with-icon .el-checkbox-group {
-    flex: 1;
-  }
+	.checkbox-group-with-icon .el-checkbox-group {
+		flex: 1;
+	}
 
-  .form-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.5rem;
-  }
+	.form-actions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 1.5rem;
+	}
 
-  .form-actions .el-button {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
+	.form-actions .el-button {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
 
-  .el-button .material-symbols-outlined {
-    font-size: 1.2rem;
-  }
+	.el-button .material-symbols-outlined {
+		font-size: 1.2rem;
+	}
 
-  /* Дополнительные стили для адаптивности и улучшения внешнего вида */
-  @media (max-width: 768px) {
-    .form-actions {
-      flex-direction: column;
-      gap: 10px;
-    }
+	/* Дополнительные стили для адаптивности и улучшения внешнего вида */
+	@media (max-width: 768px) {
+		.form-actions {
+			flex-direction: column;
+			gap: 10px;
+		}
 
-    .el-button {
-      width: 100%;
-      justify-content: center;
-    }
+		.el-button {
+			width: 100%;
+			justify-content: center;
+		}
 
-    .main {
-      justify-content: flex-start;
-      min-height: auto;
-      overflow: hidden;
-    }
-    :deep(html) {
-      overflow: hidden;
-    }
-  }
+		.main {
+			justify-content: flex-start;
+			min-height: auto;
+			overflow: hidden;
+		}
+		:deep(html) {
+			overflow: hidden;
+		}
+	}
 </style>
