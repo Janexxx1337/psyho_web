@@ -16,94 +16,94 @@ import PositiveThoughts from '@/views/games/PositiveThoughts.vue';
 import IdeaGenerator from '@/views/games/IdeaGenerator.vue';
 
 const routes = [
-  {
-    path: '/',
-    name: 'FormPage',
-    component: FormPage,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/Logic',
-    name: 'LogicPage',
-    component: LogicPage,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/idea-generator',
-    name: 'IdeaGenerator',
-    component: IdeaGenerator,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/simon-says',
-    name: 'SimonSays',
-    component: SimonSays,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/positive-thoughts',
-    name: 'PositiveThoughts',
-    component: PositiveThoughts,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/recommendations',
-    name: 'RecommendationsPage',
-    component: RecommendationsPage,
-    props: (route) => ({ recommendations: route.params.recommendations }),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/history',
-    name: 'History',
-    component: History,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/session/:session_id',
-    name: 'SessionDetails',
-    component: SessionDetails,
-    props: true,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register,
-  },
-  {
-    path: '/mood-diary',
-    name: 'MoodDiary',
-    component: MoodDiary,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/profile',
-    name: 'UserProfile',
-    component: UserProfile,
-    meta: { requiresAuth: true },
-  },
+	{
+		path: '/',
+		name: 'FormPage',
+		component: FormPage,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/Logic',
+		name: 'LogicPage',
+		component: LogicPage,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/idea-generator',
+		name: 'IdeaGenerator',
+		component: IdeaGenerator,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/simon-says',
+		name: 'SimonSays',
+		component: SimonSays,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/positive-thoughts',
+		name: 'PositiveThoughts',
+		component: PositiveThoughts,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/recommendations',
+		name: 'RecommendationsPage',
+		component: RecommendationsPage,
+		props: (route) => ({ recommendations: route.params.recommendations }),
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/history',
+		name: 'History',
+		component: History,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/session/:session_id',
+		name: 'SessionDetails',
+		component: SessionDetails,
+		props: true,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/login',
+		name: 'Login',
+		component: Login,
+	},
+	{
+		path: '/register',
+		name: 'Register',
+		component: Register,
+	},
+	{
+		path: '/mood-diary',
+		name: 'MoodDiary',
+		component: MoodDiary,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/profile',
+		name: 'UserProfile',
+		component: UserProfile,
+		meta: { requiresAuth: true },
+	},
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
+	history: createWebHistory(),
+	routes,
 });
 
 // Навигационный охранник
 router.beforeEach((to, from, next) => {
-  const currentUser = authService.getCurrentUser(); // Проверяем текущего пользователя через authService
+	const currentUser = authService.getCurrentUser(); // Проверяем текущего пользователя через authService
 
-  if (to.meta.requiresAuth && !currentUser) {
-    next({ path: '/login', query: { redirect: to.fullPath } }); // Перенаправляем на страницу входа с сохранением целевого пути
-  } else {
-    next(); // Продолжаем навигацию
-  }
+	if (to.meta.requiresAuth && !currentUser) {
+		next({ path: '/login', query: { redirect: to.fullPath } }); // Перенаправляем на страницу входа с сохранением целевого пути
+	} else {
+		next(); // Продолжаем навигацию
+	}
 });
 
 export default router;

@@ -1,46 +1,46 @@
 {
-  "name": "psyho_bot",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .js,.ts,.vue",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "prepare": "husky install"
-  },
-  "dependencies": {
-    "@element-plus/icons-vue": "^2.3.1",
-    "animejs": "^3.2.2",
-    "axios": "^1.7.7",
-    "dayjs": "^1.11.13",
-    "echarts": "^5.1.2",
-    "element-plus": "^2.8.3",
-    "pinia": "^2.2.2",
-    "vue": "^3.4.29",
-    "vue-echarts": "^6.0.0",
-    "vue-router": "^4.0.13"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "eslint": "^9.11.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-define-config": "^2.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-vue": "^9.28.0",
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "vite": "^5.3.1",
-    "vite-plugin-vue-devtools": "^7.4.5"
-  },
-  "lint-staged": {
-    "*.{js,ts,vue}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  }
+	"name": "psyho_bot",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"lint": "eslint . --ext .js,.ts,.vue",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"prepare": "husky install"
+	},
+	"dependencies": {
+		"@element-plus/icons-vue": "^2.3.1",
+		"animejs": "^3.2.2",
+		"axios": "^1.7.7",
+		"dayjs": "^1.11.13",
+		"echarts": "^5.1.2",
+		"element-plus": "^2.8.3",
+		"pinia": "^2.2.2",
+		"vue": "^3.4.29",
+		"vue-echarts": "^6.0.0",
+		"vue-router": "^4.0.13"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^5.0.5",
+		"eslint": "^9.11.1",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-define-config": "^2.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"eslint-plugin-vue": "^9.28.0",
+		"husky": "^9.1.6",
+		"lint-staged": "^15.2.10",
+		"prettier": "^3.3.3",
+		"vite": "^5.3.1",
+		"vite-plugin-vue-devtools": "^7.4.5"
+	},
+	"lint-staged": {
+		"*.{js,ts,vue}": [
+			"eslint --fix",
+			"prettier --write"
+		]
+	}
 }

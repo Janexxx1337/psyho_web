@@ -1,124 +1,124 @@
 .logic-page {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+	padding: 20px;
+	max-width: 800px;
+	margin: 0 auto;
 }
 
 h1 {
-    text-align: center;
-    margin-bottom: 10px;
+	text-align: center;
+	margin-bottom: 10px;
 }
 
 p {
-    text-align: center;
-    margin-bottom: 30px;
+	text-align: center;
+	margin-bottom: 30px;
 }
 
 .question-number {
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: bold;
+	text-align: center;
+	margin-bottom: 20px;
+	font-weight: bold;
 }
 
 .question-card {
-    background-color: #fff;
-    padding: 25px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+	background-color: #fff;
+	padding: 25px;
+	border-radius: 8px;
+	margin-bottom: 20px;
 }
 
 .question {
-    font-size: 1.3em;
-    margin-bottom: 20px;
+	font-size: 1.3em;
+	margin-bottom: 20px;
 }
 
 .options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .option-radio {
-    width: 100%;
-    margin: 0;
+	width: 100%;
+	margin: 0;
 }
 
 .option-radio .el-radio__label {
-    width: 100%;
+	width: 100%;
 }
 
 .option-radio .el-radio__input {
-    margin-right: 10px;
+	margin-right: 10px;
 }
 
 .option-radio .el-radio__content {
-    width: 100%;
+	width: 100%;
 }
 
 .navigation-buttons {
-    text-align: center;
-    margin-top: 20px;
+	text-align: center;
+	margin-top: 20px;
 }
 
 .navigation-buttons .el-button {
-    margin: 0 10px;
+	margin: 0 10px;
 }
 
 .results {
-    text-align: center;
+	text-align: center;
 }
 
 .results h2 {
-    margin-bottom: 20px;
-    color: #67c23a;
+	margin-bottom: 20px;
+	color: #67c23a;
 }
 
 .results p {
-    font-size: 1.2em;
-    margin-bottom: 30px;
+	font-size: 1.2em;
+	margin-bottom: 30px;
 }
 
 .results .el-button {
-    margin: 0 10px;
+	margin: 0 10px;
 }
 
 .nickname-section {
-    margin-bottom: 30px;
+	margin-bottom: 30px;
 }
 
 .nickname-image {
-    width: 100px;
-    margin-bottom: 10px;
+	width: 100px;
+	margin-bottom: 10px;
 }
 
 .nickname-title {
-    font-size: 1.5em;
-    font-weight: bold;
+	font-size: 1.5em;
+	font-weight: bold;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s;
+	transition: opacity 0.5s;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
+	opacity: 0;
 }
 
 .incorrect-answers {
-    text-align: left;
-    margin: 20px auto;
-    max-width: 600px;
+	text-align: left;
+	margin: 20px auto;
+	max-width: 600px;
 }
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 600px) {
-    .question {
-        font-size: 1.1em;
-    }
+	.question {
+		font-size: 1.1em;
+	}
 
-    .option-radio {
-        font-size: 0.9em;
-    }
+	.option-radio {
+		font-size: 0.9em;
+	}
 }

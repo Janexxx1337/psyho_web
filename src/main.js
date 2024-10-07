@@ -17,7 +17,7 @@ app.use(pinia);
 
 // Регистрируем все иконки как глобальные компоненты
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component);
+	app.component(key, component);
 }
 
 app.mount('#app');
