@@ -174,7 +174,7 @@
 		formRef.value.validate(async (valid: boolean) => {
 			if (valid) {
 				await formStore.handleSubmit();
-				router.push({ name: 'RecommendationsPage' });
+				await router.push({name: 'RecommendationsPage'});
 			} else {
 				console.log('Форма содержит ошибки.');
 			}

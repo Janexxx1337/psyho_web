@@ -5,4 +5,3 @@ nest_asyncio
 fastapi~=0.114.0
 uvicorn
 pydantic~=2.9.1
-python-multipart
