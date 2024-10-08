@@ -26,7 +26,7 @@
 
 <style scoped>
 	* {
-    font-family: "PT Serif", serif;
+		font-family: 'Lato', sans-serif;
 	}
 
 	.el-main {

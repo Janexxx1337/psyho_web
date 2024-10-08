@@ -27,6 +27,7 @@
 						show-icon
 					></el-alert>
 				</div>
+
 				<!-- История общения -->
 				<div v-if="recommendationsData" class="conversation-section">
 					<h3>История общения</h3>
@@ -46,14 +47,13 @@
 								<div class="content">
 									<p v-html="message.content"></p>
 									<div class="message-meta">
-                    <el-icon
-                        @click="voiceMessage(message)"
-                        class="voice-icon"
-                        :aria-label="'Озвучить сообщение'"
-                    >
-                      <Loading v-if="message.isLoadingAudio" />
-                      <Microphone v-else />
-                    </el-icon>
+										<el-icon
+											@click="voiceMessage(message)"
+											class="voice-icon"
+											:aria-label="'Озвучить сообщение'"
+										>
+											<Microphone />
+										</el-icon>
 										<span class="timestamp">{{ message.timestamp }}</span>
 									</div>
 								</div>
@@ -112,216 +112,194 @@
 	</el-container>
 </template>
 
-
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { ElMessage, ElAlert } from 'element-plus';
-import { useFormStore } from '@/stores/formStore';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-// Импорт иконок из Element Plus
-import {
-  User,
-  Calendar,
-  ChatLineRound,
-  Microphone,
-  Loading,
-} from '@element-plus/icons-vue';
+	import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue';
+	import { useRouter } from 'vue-router';
+	import axios from 'axios';
+	import { ElMessage, ElAlert } from 'element-plus';
+	import { useFormStore } from '@/stores/formStore';
+	const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+	// Импорт иконок из Element Plus
+	import {
+		User,
+		Calendar,
+		ChatLineRound,
+		Microphone,
+	} from '@element-plus/icons-vue';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-  isLoadingAudio?: boolean;
-}
+	interface Message {
+		role: 'user' | 'assistant';
+		content: string;
+		timestamp: string;
+	}
 
-const router = useRouter();
-const formStore = useFormStore();
-const recommendationsData = computed(() =>
-    formStore.getRecommendationsData()
-);
-const patientName = computed(
-    () => recommendationsData.value?.name || 'Имя не указано'
-);
-const patientAge = computed(
-    () => recommendationsData.value?.age || 'Возраст не указан'
-);
-const currentDate = computed(() => new Date().toLocaleDateString());
-const additionalQuestion = ref('');
-const loading = ref(false);
-const conversationHistory = ref<Message[]>([]);
-const chatContainer = ref<HTMLElement | null>(null);
-const isMuted = ref(false);
+	const router = useRouter();
+	const formStore = useFormStore();
+	const recommendationsData = computed(() =>
+		formStore.getRecommendationsData()
+	);
+	const patientName = computed(
+		() => recommendationsData.value?.name || 'Имя не указано'
+	);
+	const patientAge = computed(
+		() => recommendationsData.value?.age || 'Возраст не указан'
+	);
+	const currentDate = computed(() => new Date().toLocaleDateString());
+	const additionalQuestion = ref('');
+	const loading = ref(false);
+	const conversationHistory = ref<Message[]>([]);
+	const chatContainer = ref<HTMLElement | null>(null);
+	const isMuted = ref(false);
 
-const formatTimestamp = (date: Date) =>
-    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+	const formatTimestamp = (date: Date) =>
+		date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-onMounted(() => {
-  if (recommendationsData.value) {
-    conversationHistory.value.push({
-      role: 'assistant',
-      content: formattedRecommendations.value,
-      timestamp: formatTimestamp(new Date()),
-    });
-    scrollToBottom();
-  } else {
-    ElMessage.warning(
-        'Нет данных для отображения. Пожалуйста, заполните форму.'
-    );
-    router.push({ name: 'FormPage' });
-  }
-});
+	onMounted(() => {
+		if (recommendationsData.value) {
+			conversationHistory.value.push({
+				role: 'assistant',
+				content: formattedRecommendations.value,
+				timestamp: formatTimestamp(new Date()),
+			});
+			scrollToBottom();
+		} else {
+			ElMessage.warning(
+				'Нет данных для отображения. Пожалуйста, заполните форму.'
+			);
+			router.push({ name: 'FormPage' });
+		}
+	});
 
-const formattedRecommendations = computed(() => {
-  if (!recommendationsData.value?.recommendations) return 'Нет рекомендаций';
-  const lines = recommendationsData.value.recommendations
-      .split(/\n/)
-      .filter((line) => line.trim() !== '');
-  return `<ul>${lines.map((line) => `<li>${line.trim()}</li>`).join('')}</ul>`;
-});
+	onBeforeUnmount(() => {
+		if (speechSynthesis.speaking) {
+			speechSynthesis.cancel();
+		}
+	});
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (chatContainer.value) {
-      chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
-    }
-  });
-};
+	const formattedRecommendations = computed(() => {
+		if (!recommendationsData.value?.recommendations) return 'Нет рекомендаций';
+		const lines = recommendationsData.value.recommendations
+			.split(/\n/)
+			.filter((line) => line.trim() !== '');
+		return `<ul>${lines.map((line) => `<li>${line.trim()}</li>`).join('')}</ul>`;
+	});
 
-const printRecommendation = () => window.print();
-const goToHomePage = () => router.push({ name: 'FormPage' });
+	const scrollToBottom = () => {
+		nextTick(() => {
+			if (chatContainer.value) {
+				chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+			}
+		});
+	};
 
-const sendAdditionalQuestion = async () => {
-  if (!additionalQuestion.value.trim()) return;
-  loading.value = true;
-  try {
-    conversationHistory.value.push({
-      role: 'user',
-      content: additionalQuestion.value,
-      timestamp: formatTimestamp(new Date()),
-    });
-    const formData = new FormData();
-    formData.append('question', additionalQuestion.value);
-    formData.append(
-        'session_id',
-        recommendationsData.value?.session_id || ''
-    );
-    formData.append('name', recommendationsData.value?.name || '');
-    formData.append('age', String(recommendationsData.value?.age || ''));
-    formData.append(
-        'condition',
-        String(recommendationsData.value?.condition || '')
-    );
-    formData.append(
-        'description',
-        recommendationsData.value?.description || ''
-    );
+	const printRecommendation = () => window.print();
+	const goToHomePage = () => router.push({ name: 'FormPage' });
 
-    const { data } = await axios.post(
-        `${API_BASE_URL}/get_recommendations`,
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-    );
+	const sendAdditionalQuestion = async () => {
+		if (!additionalQuestion.value.trim()) return;
+		loading.value = true;
+		try {
+			conversationHistory.value.push({
+				role: 'user',
+				content: additionalQuestion.value,
+				timestamp: formatTimestamp(new Date()),
+			});
+			const formData = new FormData();
+			formData.append('question', additionalQuestion.value);
+			formData.append(
+				'session_id',
+				recommendationsData.value?.session_id || ''
+			);
+			formData.append('name', recommendationsData.value?.name || '');
+			formData.append('age', String(recommendationsData.value?.age || ''));
+			formData.append(
+				'condition',
+				String(recommendationsData.value?.condition || '')
+			);
+			formData.append(
+				'description',
+				recommendationsData.value?.description || ''
+			);
 
-    conversationHistory.value.push({
-      role: 'assistant',
-      content: data.recommendations,
-      timestamp: formatTimestamp(new Date()),
-    });
+			const { data } = await axios.post(
+				`${API_BASE_URL}/get_recommendations`,
+				formData,
+				{
+					headers: { 'Content-Type': 'multipart/form-data' },
+				}
+			);
 
-    additionalQuestion.value = '';
-    scrollToBottom();
-  } catch (error) {
-    ElMessage.error(
-        'Не удалось отправить ваш вопрос. Пожалуйста, попробуйте позже.'
-    );
-  } finally {
-    loading.value = false;
-  }
-};
+			conversationHistory.value.push({
+				role: 'assistant',
+				content: data.recommendations,
+				timestamp: formatTimestamp(new Date()),
+			});
 
-const saveRecommendation = async () => {
-  try {
-    if (!recommendationsData.value)
-      throw new Error('Нет данных для сохранения.');
+			additionalQuestion.value = '';
+			scrollToBottom();
+		} catch (error) {
+			ElMessage.error(
+				'Не удалось отправить ваш вопрос. Пожалуйста, попробуйте позже.'
+			);
+		} finally {
+			loading.value = false;
+		}
+	};
 
-    const data = {
-      session_id: recommendationsData.value.session_id,
-      name: recommendationsData.value.name,
-      age: recommendationsData.value.age,
-      condition: recommendationsData.value.condition,
-      description: recommendationsData.value.description,
-      date: currentDate.value,
-    };
+	const saveRecommendation = async () => {
+		try {
+			if (!recommendationsData.value)
+				throw new Error('Нет данных для сохранения.');
 
-    const response = await axios.post(`${API_BASE_URL}/save_session`, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+			const data = {
+				session_id: recommendationsData.value.session_id,
+				name: recommendationsData.value.name,
+				age: recommendationsData.value.age,
+				condition: recommendationsData.value.condition,
+				description: recommendationsData.value.description,
+				date: currentDate.value,
+			};
 
-    if (response.status === 200) {
-      ElMessage.success('Сессия успешно сохранена.');
-    } else {
-      throw new Error(
-          'Не удалось сохранить сессию. Неправильный ответ от сервера.'
-      );
-    }
-  } catch (error) {
-    ElMessage.error(`Не удалось сохранить сессию. Ошибка: ${error.message}`);
-  }
-};
+			console.log('Отправляем данные для сохранения сессии:', data);
 
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const gainNode = audioContext.createGain();
-gainNode.connect(audioContext.destination);
+			const response = await axios.post(`${API_BASE_URL}/save_session`, data, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
 
-const voiceMessage = async (message: Message) => {
-  if (isMuted.value || message.isLoadingAudio) return;
-  try {
-    message.isLoadingAudio = true;
-    const response = await axios.post(
-        `${API_BASE_URL}/synthesize_speech`,
-        { text: message.content },
-        {
-          responseType: 'arraybuffer',
-        }
-    );
-    const audioBuffer = await audioContext.decodeAudioData(response.data);
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(gainNode);
-    source.start(0);
-    message.audioSource = source;
-    source.onended = () => {
-      message.audioSource = null;
-    };
-  } catch (error) {
-    console.error('Ошибка при воспроизведении аудио:', error);
-    ElMessage.error('Не удалось воспроизвести аудио.');
-  } finally {
-    message.isLoadingAudio = false;
-  }
-};
+			console.log('Ответ от сервера:', response);
 
-const toggleMute = () => {
-  isMuted.value = !isMuted.value;
-  gainNode.gain.value = isMuted.value ? 0 : 1;
+			if (response.status === 200) {
+				ElMessage.success('Сессия успешно сохранена.');
+			} else {
+				throw new Error(
+					'Не удалось сохранить сессию. Неправильный ответ от сервера.'
+				);
+			}
+		} catch (error) {
+			console.error('Ошибка при сохранении сессии:', error);
+			ElMessage.error(`Не удалось сохранить сессию. Ошибка: ${error.message}`);
+		}
+	};
 
-  if (isMuted.value) {
-    // Останавливаем все текущие аудио
-    conversationHistory.value.forEach((message) => {
-      if (message.audioSource) {
-        message.audioSource.stop();
-        message.audioSource = null;
-      }
-    });
-  }
-};
+	const voiceMessage = (message: Message) => {
+		if (isMuted.value) return;
+		if (speechSynthesis.speaking) speechSynthesis.cancel();
+		const utterance = new SpeechSynthesisUtterance(message.content);
+		utterance.lang = 'ru-RU';
+		const voices = speechSynthesis.getVoices();
+		const selectedVoice = voices.find(
+			(voice) => voice.lang === 'ru-RU' && voice.name.includes('Premium')
+		);
+		if (selectedVoice) utterance.voice = selectedVoice;
+		speechSynthesis.speak(utterance);
+	};
 
+	const toggleMute = () => {
+		isMuted.value = !isMuted.value;
+		if (isMuted.value && speechSynthesis.speaking) speechSynthesis.cancel();
+	};
 </script>
 
 <style scoped>

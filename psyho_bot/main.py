@@ -1,8 +1,8 @@
-
+import g4f
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import recommendations, sessions, mood_entries, tts
+from routers import recommendations, sessions, mood_entries
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -20,4 +20,3 @@ app.add_middleware(
 app.include_router(recommendations.router)
 app.include_router(sessions.router)
 app.include_router(mood_entries.router)
-app.include_router(tts.router)
