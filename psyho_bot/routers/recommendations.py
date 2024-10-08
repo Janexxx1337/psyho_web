@@ -1,12 +1,12 @@
 import g4f
 from fastapi import APIRouter, Form, HTTPException
-from datetime import datetime
 from typing import Dict, List
 
 router = APIRouter()
 
-# Dictionaries to store conversation history
+# Словарь для хранения истории диалогов
 conversation_history: Dict[str, List[Dict]] = {}
+
 
 @router.post("/get_recommendations")
 async def get_recommendations(
@@ -18,52 +18,52 @@ async def get_recommendations(
         session_id: str = Form(...)
 ):
     try:
-        # Initialize conversation history for a new session
+        # Инициализация истории диалога для новой сессии
         if session_id not in conversation_history:
             conversation_history[session_id] = []
 
-            # Initial prompt to the assistant
+            # Начальный системный промпт для ассистента
             initial_prompt = (
-                f"Ты — опытный психолог. Прошу тебя дать рекомендации или поддерживающие слова для человека на основе его ввода. "
-                f"Не используй английский язык, не упоминай, что ты ИИ, и не предлагай продолжить задавать вопросы. "
-                f"Ответ должен быть полностью на русском языке, без использования английских слов или фраз.\n\n"
-                f"Имя клиента: {name} 🌟\n"
-                f"Возраст клиента: {age} лет 🎂\n"
-                f"Состояние клиента: {condition} 😌\n"
-                f"Описание состояния: {description} ✍️\n"
-                f"\nПожалуйста, предоставь рекомендации или поддерживающие слова для этого человека, используя только русский язык."
+                f"Ты — опытный психолог-консультант. "
+                f"Твоя задача — предоставить профессиональные и эмпатичные рекомендации клиенту на основе его состояния и описания ситуации. "
+                f"Отвечай исключительно на русском языке.\n\n"
+                f"Информация о клиенте:\n"
+                f"Имя: {name}\n"
+                f"Возраст: {age} лет\n"
+                f"Состояние: {condition}\n"
+                f"Описание проблемы: {description}\n"
             )
-            conversation_history[session_id].append({"role": "user", "content": initial_prompt})
+            conversation_history[session_id].append({"role": "system", "content": initial_prompt})
 
-        # Add the user's question if provided
+        # Добавляем вопрос пользователя, если он предоставлен
         if question:
             conversation_history[session_id].append({
                 "role": "user",
-                "content": question,
-                "timestamp": datetime.now().strftime("%H:%M")
+                "content": question
             })
 
-        # Prepare the messages for the assistant
-        messages = conversation_history[session_id]
+        # Подготовка сообщений для модели (без временных меток и лишних данных)
+        messages_for_model = [
+            {"role": msg["role"], "content": msg["content"]} for msg in conversation_history[session_id]
+        ]
 
-        # Get the assistant's response
+        # Получение ответа от ассистента
         response = g4f.ChatCompletion.create(
             model="gpt-4o-mini",
-            messages=messages,
-            stream=False,  # Changed to False for simplicity
+            messages=messages_for_model,
+            stream=False,
         )
 
-        # Collect the assistant's response
+        # Обработка ответа ассистента
         if isinstance(response, list):
             result = "".join(response)
         else:
             result = response
 
-        # Add the assistant's response to the conversation history
+        # Добавляем ответ ассистента в историю диалога
         conversation_history[session_id].append({
             "role": "assistant",
-            "content": result,
-            "timestamp": datetime.now().strftime("%H:%M")
+            "content": result
         })
 
         return {"recommendations": result}
