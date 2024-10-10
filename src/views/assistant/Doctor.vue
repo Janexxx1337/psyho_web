@@ -26,7 +26,7 @@
       </el-row>
     </el-header>
 
-    <el-main style="padding: 0;" v-loading="loading" element-loading-text="Загрузка...">
+    <el-main style="padding: 0;" v-loading="loading" element-loading-text="Доктор печатает...">
       <div id="chat" class="chat-container">
         <div
             v-for="(message, index) in messages"
