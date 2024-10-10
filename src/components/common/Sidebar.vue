@@ -39,6 +39,10 @@
 					<MenuIcon class="input-icon" />
 					<span>Доктор ИИ</span>
 				</el-menu-item>
+        <el-menu-item index="/Doctor">
+          <MenuIcon class="input-icon" />
+          <span>Доктор Актив</span>
+        </el-menu-item>
 				<el-menu-item index="/Logic">
 					<SwitchFilled class="input-icon" />
 					<span>Тест: Логика</span>

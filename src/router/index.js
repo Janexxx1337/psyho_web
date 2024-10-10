@@ -14,6 +14,7 @@ import { authService } from '@/services/authService';
 import SimonSays from '@/views/games/SimonSays.vue';
 import PositiveThoughts from '@/views/games/PositiveThoughts.vue';
 import IdeaGenerator from '@/views/games/IdeaGenerator.vue';
+import Doctor from "@/views/assistant/Doctor.vue";
 
 const routes = [
 	{
@@ -26,6 +27,12 @@ const routes = [
 		path: '/Logic',
 		name: 'LogicPage',
 		component: LogicPage,
+		meta: { requiresAuth: true },
+	},
+	{
+		path: '/Doctor',
+		name: 'Doctor',
+		component: Doctor,
 		meta: { requiresAuth: true },
 	},
 	{

@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import recommendations, sessions, mood_entries, tts
+from routers import recommendations, sessions, mood_entries, tts, doctor_session
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -21,3 +21,4 @@ app.include_router(recommendations.router)
 app.include_router(sessions.router)
 app.include_router(mood_entries.router)
 app.include_router(tts.router)
+app.include_router(doctor_session.router)
