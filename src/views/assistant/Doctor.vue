@@ -101,7 +101,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onUnmounted, nextTick} from 'vue';
+import {ref, onUnmounted, nextTick} from 'vue';
 import {v4 as uuidv4} from 'uuid';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
